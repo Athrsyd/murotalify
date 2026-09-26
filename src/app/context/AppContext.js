@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useReducer, useEffect, useCallback, useRef } from 'react';
+import * as Tone from 'tone';
 
 const QARI_MAP = {
   '01': 'Abdullah Al-Juhany',
@@ -37,6 +38,60 @@ const AMBIENT_PRESETS = [
   { name: 'Harmoni Alam', sounds: { rain: 0.3, water: 0.3, bird: 0.45, nature: 0.35 } },
 ];
 
+export const MUROTAL_EFFECT_PRESETS = [
+  {
+    id: 'nabawi',
+    name: 'Tenang & Syahdu',
+    emoji: '🕊️',
+    tag: 'Rekomendasi',
+    desc: 'Lantunan hangat menyejukkan hati dengan gema lembut dan hening',
+    reverbDecay: 3.5,
+    reverbWet: 0.35,
+    delayWet: 0.15,
+    delayTime: 0.25,
+  },
+  {
+    id: 'haram',
+    name: 'Megah & Luas',
+    emoji: '🌌',
+    tag: 'Agung',
+    desc: 'Resonansi lapang dan bergetar di dada dengan gema ruangan luas',
+    reverbDecay: 5.2,
+    reverbWet: 0.45,
+    delayWet: 0.20,
+    delayTime: 0.28,
+  },
+  {
+    id: 'kubah',
+    name: 'Mendalam & Mengalun',
+    emoji: '✨',
+    tag: 'Gema Panjang',
+    desc: 'Pantulan mengalun tinggi dengan resonansi yang panjang dan mendalam',
+    reverbDecay: 6.5,
+    reverbWet: 0.55,
+    delayWet: 0.25,
+    delayTime: 0.32,
+  },
+  {
+    id: 'khusyuk',
+    name: 'Jernih & Khidmat',
+    emoji: '🎙️',
+    tag: 'Fokus',
+    desc: 'Suasana hening dengan artikulasi huruf tilawah yang jernih',
+    reverbDecay: 2.0,
+    reverbWet: 0.20,
+    delayWet: 0.05,
+    delayTime: 0.20,
+  },
+];
+
+export const DEFAULT_EFFECT_SETTINGS = {
+  reverbDecay: 3.5, // 1.0s - 8.0s
+  reverbWet: 0.35,   // 0.0 - 1.0 (0% - 100%)
+  delayWet: 0.15,    // 0.0 - 0.5 (0% - 50%)
+  delayTime: 0.25,   // 0.1s - 0.5s (100ms - 500ms)
+};
+
 const initialState = {
   // Data
   surahList: [],
@@ -61,6 +116,12 @@ const initialState = {
   
   // Qari
   selectedQari: '05', // Default Misyari Rasyid Al-Afasy
+  
+  // Murotal Effect Panel & Settings (Acoustics & Mosque Reverb)
+  murotalEffectOpen: false,
+  epicAmbience: false,
+  effectPreset: 'nabawi',
+  effectSettings: DEFAULT_EFFECT_SETTINGS,
   
   // Ambient
   ambientOpen: false,
@@ -95,6 +156,15 @@ function savePlaylistsToStorage(playlists) {
       console.error('Error saving playlists to localStorage:', e);
     }
   }
+}
+
+export function getProxiedAudioUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('/') || url.startsWith('blob:')) return url;
+  if (url.includes('cdn.equran.id') || url.includes('equran.id')) {
+    return `/api/audio?url=${encodeURIComponent(url)}`;
+  }
+  return url;
 }
 
 function reducer(state, action) {
@@ -174,8 +244,86 @@ function reducer(state, action) {
       }
       return { ...state, selectedQari: action.payload };
     
+    case 'TOGGLE_EPIC_AMBIENCE': {
+      const nextVal = !state.epicAmbience;
+      if (typeof window !== 'undefined') {
+        try { localStorage.setItem('murotal_epic_ambience', nextVal.toString()); } catch (e) {}
+      }
+      return { ...state, epicAmbience: nextVal };
+    }
+    case 'SET_EPIC_AMBIENCE': {
+      if (typeof window !== 'undefined') {
+        try { localStorage.setItem('murotal_epic_ambience', action.payload.toString()); } catch (e) {}
+      }
+      return { ...state, epicAmbience: action.payload };
+    }
+    case 'TOGGLE_MUROTAL_EFFECT_PANEL':
+      return {
+        ...state,
+        murotalEffectOpen: !state.murotalEffectOpen,
+        ambientOpen: false,
+      };
+    case 'SET_MUROTAL_EFFECT_OPEN':
+      return { ...state, murotalEffectOpen: action.payload };
+    case 'SET_EFFECT_SETTING': {
+      const { key, value } = action.payload;
+      const nextSettings = { ...state.effectSettings, [key]: value };
+      if (typeof window !== 'undefined') {
+        try { localStorage.setItem('murotal_effect_settings', JSON.stringify(nextSettings)); } catch (e) {}
+      }
+      return {
+        ...state,
+        effectSettings: nextSettings,
+        effectPreset: 'custom',
+      };
+    }
+    case 'APPLY_EFFECT_PRESET': {
+      const preset = action.payload;
+      const nextSettings = {
+        reverbDecay: preset.reverbDecay,
+        reverbWet: preset.reverbWet,
+        delayWet: preset.delayWet,
+        delayTime: preset.delayTime,
+      };
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('murotal_effect_settings', JSON.stringify(nextSettings));
+          localStorage.setItem('murotal_effect_preset', preset.id);
+        } catch (e) {}
+      }
+      return {
+        ...state,
+        effectSettings: nextSettings,
+        effectPreset: preset.id,
+      };
+    }
+    case 'RESET_EFFECT_SETTINGS': {
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('murotal_effect_settings', JSON.stringify(DEFAULT_EFFECT_SETTINGS));
+          localStorage.setItem('murotal_effect_preset', 'nabawi');
+        } catch (e) {}
+      }
+      return {
+        ...state,
+        effectSettings: DEFAULT_EFFECT_SETTINGS,
+        effectPreset: 'nabawi',
+      };
+    }
+    case 'RESTORE_EFFECT_SETTINGS': {
+      return {
+        ...state,
+        effectSettings: action.payload.settings,
+        effectPreset: action.payload.preset || 'nabawi',
+      };
+    }
+    
     case 'TOGGLE_AMBIENT':
-      return { ...state, ambientOpen: !state.ambientOpen };
+      return {
+        ...state,
+        ambientOpen: !state.ambientOpen,
+        murotalEffectOpen: false,
+      };
     case 'SET_AMBIENT_OPEN':
       return { ...state, ambientOpen: action.payload };
     case 'SET_AMBIENT_SOUND': {
@@ -270,25 +418,163 @@ const AppContext = createContext();
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const stateRef = useRef(state);
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   const audioRef = useRef(null);
   const ambientRefs = useRef({});
+  const decayTimeoutRef = useRef(null);
+  const toneNodesRef = useRef({
+    sourceNode: null,
+    dryGain: null,
+    effectGain: null,
+    delay: null,
+    reverb: null,
+    masterMurotalGain: null,
+    isInitialized: false,
+  });
 
-  const playTrack = useCallback((track) => {
-    const audio = audioRef.current;
+  const ensureAudioContext = useCallback(async () => {
+    if (typeof window === 'undefined') return;
+    try {
+      if (Tone.context.state !== 'running') {
+        await Tone.start();
+      }
+    } catch (e) {
+      console.warn('Tone.start error:', e);
+    }
+  }, []);
+
+  const showToast = useCallback((message) => {
+    dispatch({ type: 'SET_TOAST', payload: message });
+    setTimeout(() => dispatch({ type: 'SET_TOAST', payload: null }), 3000);
+  }, []);
+
+  const toggleEpicAmbience = useCallback(() => {
+    ensureAudioContext();
+    const nextVal = !state.epicAmbience;
+    dispatch({ type: 'TOGGLE_EPIC_AMBIENCE' });
+    showToast(nextVal ? '✨ Gema Murotal: Aktif' : 'Gema Murotal: Nonaktif');
+  }, [state.epicAmbience, ensureAudioContext, showToast]);
+
+  const ensureToneGraph = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    const current = toneNodesRef.current;
+    if (
+      current.isInitialized &&
+      current.dryGain &&
+      !current.dryGain.disposed &&
+      current.masterMurotalGain &&
+      !current.masterMurotalGain.disposed
+    ) {
+      return current;
+    }
+
+    try {
+      const currentSettings = stateRef.current?.effectSettings ?? DEFAULT_EFFECT_SETTINGS;
+
+      // FeedbackDelay: customizable delay time, feedback, and wet
+      const delay = new Tone.FeedbackDelay({
+        delayTime: currentSettings.delayTime,
+        feedback: 0.15,
+        wet: currentSettings.delayWet,
+      });
+
+      // Reverb: customizable decay, preDelay 0.02s, customizable wet
+      const reverb = new Tone.Reverb({
+        decay: currentSettings.reverbDecay,
+        preDelay: 0.02,
+        wet: currentSettings.reverbWet,
+      });
+
+      const currentVol = stateRef.current?.volume ?? initialState.volume;
+      const currentEpic = stateRef.current?.epicAmbience ?? false;
+
+      const masterMurotalGain = new Tone.Gain(currentVol);
+
+      // Bypass switching gains
+      const initialDry = currentEpic ? 0 : 1;
+      const initialWet = currentEpic ? 1 : 0;
+      const dryGain = new Tone.Gain(initialDry);
+      const effectGain = new Tone.Gain(initialWet);
+
+      // Dry bypass path: dryGain -> masterMurotalGain -> destination
+      dryGain.connect(masterMurotalGain);
+
+      // Effect path: effectGain -> delay -> reverb -> masterMurotalGain -> destination
+      effectGain.connect(delay);
+      delay.connect(reverb);
+      reverb.connect(masterMurotalGain);
+
+      masterMurotalGain.toDestination();
+
+      const prevSource = current.sourceNode;
+      if (prevSource) {
+        try {
+          Tone.connect(prevSource, dryGain);
+          Tone.connect(prevSource, effectGain);
+        } catch (e) {}
+      }
+
+      toneNodesRef.current = {
+        sourceNode: prevSource || null,
+        dryGain,
+        effectGain,
+        delay,
+        reverb,
+        masterMurotalGain,
+        isInitialized: true,
+      };
+
+      if (typeof window !== 'undefined') {
+        window.__tone = toneNodesRef.current;
+      }
+
+      return toneNodesRef.current;
+    } catch (err) {
+      console.error('Failed to initialize Tone.js audio graph:', err);
+      return null;
+    }
+  }, []);
+
+  const attachSourceNodeIfNeeded = useCallback((audio) => {
     if (!audio) return;
-    
-    audio.src = track.audioUrl;
-    audio.play().catch(e => console.error('Play error:', e));
+    const graph = ensureToneGraph();
+    if (!graph) return;
+
+    if (!graph.sourceNode) {
+      try {
+        const rawContext = Tone.getContext();
+        const sourceNode = rawContext.createMediaElementSource(audio);
+        const { dryGain, effectGain } = graph;
+        if (dryGain && effectGain) {
+          Tone.connect(sourceNode, dryGain);
+          Tone.connect(sourceNode, effectGain);
+        }
+        graph.sourceNode = sourceNode;
+        console.log('[Tone] MediaElementSource attached successfully');
+      } catch (err) {
+        console.warn('[Tone] Failed to attach MediaElementSource:', err);
+      }
+    }
+  }, [ensureToneGraph]);
+
+  const playTrack = useCallback(async (track) => {
+    const audio = audioRef.current;
+    if (!audio || !track || !track.audioUrl) return;
+
+    // Immediately dispatch so UI updates instantly (active track title, playing state, etc.)
     dispatch({ type: 'SET_CURRENT_TRACK', payload: track });
-    
+
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('murotal_last_track', JSON.stringify(track));
         localStorage.setItem('murotal_last_time', '0');
       } catch (e) {}
     }
-    
-    // Add to recently played
+
     if (track.type === 'full') {
       dispatch({
         type: 'ADD_RECENTLY_PLAYED',
@@ -300,20 +586,44 @@ export function AppProvider({ children }) {
         },
       });
     }
-  }, []);
 
-  const togglePlay = useCallback(() => {
+    try {
+      await ensureAudioContext();
+      audio.crossOrigin = 'anonymous';
+      const targetSrc = getProxiedAudioUrl(track.audioUrl);
+      if (audio.src !== targetSrc && !audio.src.endsWith(targetSrc)) {
+        audio.src = targetSrc;
+      }
+      attachSourceNodeIfNeeded(audio);
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        await playPromise;
+      }
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        console.error('[playTrack] Play error:', e);
+      }
+    }
+  }, [ensureAudioContext, attachSourceNodeIfNeeded]);
+
+  const togglePlay = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (!audio.src && state.currentTrack?.audioUrl) {
-      audio.src = state.currentTrack.audioUrl;
+    await ensureAudioContext();
+    const currentTrack = stateRef.current?.currentTrack;
+    if (!audio.src && currentTrack?.audioUrl) {
+      audio.crossOrigin = 'anonymous';
+      audio.src = getProxiedAudioUrl(currentTrack.audioUrl);
     }
+    attachSourceNodeIfNeeded(audio);
     if (audio.paused) {
-      audio.play().catch(e => console.error('Play error:', e));
+      audio.play().catch(e => {
+        if (e.name !== 'AbortError') console.error('Play error:', e);
+      });
     } else {
       audio.pause();
     }
-  }, [state.currentTrack]);
+  }, [ensureAudioContext, attachSourceNodeIfNeeded]);
 
   const seek = useCallback((time) => {
     if (audioRef.current) {
@@ -364,19 +674,64 @@ export function AppProvider({ children }) {
     }
   }, [state.queue, state.currentTrack, playTrack]);
 
-  const showToast = useCallback((message) => {
-    dispatch({ type: 'SET_TOAST', payload: message });
-    setTimeout(() => dispatch({ type: 'SET_TOAST', payload: null }), 3000);
-  }, []);
-
-  // Initialize audio element and load from localStorage on mount
+  // Initialize audio element, Tone audio graph, and load from localStorage on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     if (!audioRef.current) {
       audioRef.current = new Audio();
+      audioRef.current.crossOrigin = 'anonymous';
       audioRef.current.volume = initialState.volume;
+    } else {
+      audioRef.current.crossOrigin = 'anonymous';
     }
+    if (typeof window !== 'undefined') {
+      window.__audio = audioRef.current;
+      window.__tone = toneNodesRef.current;
+      window.__Tone = Tone;
+    }
+
+    // Restore Epic Ambience setting from localStorage
+    let savedEpic = false;
+    try {
+      const epicStored = localStorage.getItem('murotal_epic_ambience');
+      if (epicStored !== null) {
+        savedEpic = epicStored === 'true';
+        dispatch({ type: 'SET_EPIC_AMBIENCE', payload: savedEpic });
+      }
+    } catch (e) {}
+
+    // Restore Custom Effect Settings from localStorage
+    try {
+      const savedPreset = localStorage.getItem('murotal_effect_preset');
+      const savedSettings = localStorage.getItem('murotal_effect_settings');
+      if (savedSettings) {
+        const parsed = JSON.parse(savedSettings);
+        if (parsed && typeof parsed.reverbDecay === 'number') {
+          dispatch({
+            type: 'RESTORE_EFFECT_SETTINGS',
+            payload: {
+              settings: parsed,
+              preset: savedPreset || 'custom',
+            },
+          });
+        }
+      }
+    } catch (e) {}
+
+    // Initialize Tone.js audio graph for Murotal tilawah (effect chain + bypass)
+    ensureToneGraph();
+
+    // Unlock Web Audio Context on first user interaction
+    const unlockAudio = () => {
+      ensureAudioContext();
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+    };
+    window.addEventListener('click', unlockAudio, { once: true, passive: true });
+    window.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
+    window.addEventListener('keydown', unlockAudio, { once: true, passive: true });
 
     try {
       // 1. Playlists
@@ -423,7 +778,8 @@ export function AppProvider({ children }) {
           });
 
           if (audioRef.current) {
-            audioRef.current.src = parsedTrack.audioUrl;
+            audioRef.current.crossOrigin = 'anonymous';
+            audioRef.current.src = getProxiedAudioUrl(parsedTrack.audioUrl);
             audioRef.current.preload = 'metadata';
             if (lastTime > 0) {
               const handleLoaded = () => {
@@ -450,6 +806,64 @@ export function AppProvider({ children }) {
       console.error('Error loading from localStorage:', e);
     }
   }, []);
+
+  // Synchronize bypass state with Tone.js gains
+  useEffect(() => {
+    const { dryGain, effectGain } = toneNodesRef.current;
+    if (!dryGain || !effectGain || dryGain.disposed || effectGain.disposed) return;
+
+    try {
+      const now = Tone.now();
+      if (state.epicAmbience) {
+        dryGain.gain.rampTo(0, 0.06, now);
+        effectGain.gain.rampTo(1, 0.06, now);
+      } else {
+        dryGain.gain.rampTo(1, 0.06, now);
+        effectGain.gain.rampTo(0, 0.06, now);
+      }
+    } catch (err) {
+      console.error('Tone bypass ramp error:', err);
+    }
+  }, [state.epicAmbience]);
+
+  // Synchronize custom effect settings (reverb, echo) with Tone.js nodes in real-time
+  useEffect(() => {
+    const { delay, reverb } = toneNodesRef.current;
+    if (!delay || !reverb || delay.disposed || reverb.disposed) return;
+
+    try {
+      const { reverbDecay, reverbWet, delayWet, delayTime } = state.effectSettings;
+      const now = Tone.now();
+
+      if (reverb.wet && typeof reverb.wet.rampTo === 'function') {
+        reverb.wet.rampTo(reverbWet, 0.04, now);
+      }
+      if (delay.wet && typeof delay.wet.rampTo === 'function') {
+        delay.wet.rampTo(delayWet, 0.04, now);
+      }
+      if (delay.delayTime && typeof delay.delayTime.rampTo === 'function') {
+        delay.delayTime.rampTo(delayTime, 0.04, now);
+      }
+
+      // Reverb decay triggers impulse response regeneration, debounce slightly
+      if (Math.abs(reverb.decay - reverbDecay) > 0.05) {
+        if (decayTimeoutRef.current) clearTimeout(decayTimeoutRef.current);
+        decayTimeoutRef.current = setTimeout(() => {
+          if (reverb && !reverb.disposed) {
+            try {
+              reverb.decay = reverbDecay;
+            } catch (e) {}
+          }
+        }, 120);
+      }
+    } catch (err) {
+      console.warn('Error applying effect settings to Tone nodes:', err);
+    }
+
+    return () => {
+      if (decayTimeoutRef.current) clearTimeout(decayTimeoutRef.current);
+    };
+  }, [state.effectSettings]);
 
   // Audio event listeners
   useEffect(() => {
@@ -510,14 +924,20 @@ export function AppProvider({ children }) {
     };
   }, [state.repeatMode, state.queue, state.currentTrack, playNext]);
 
-  // Volume control
+  // Volume control (applies to HTMLMediaElement and Tone master gain)
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = state.volume;
     }
+    const { masterMurotalGain } = toneNodesRef.current;
+    if (masterMurotalGain && !masterMurotalGain.disposed) {
+      try {
+        masterMurotalGain.gain.rampTo(state.volume, 0.02);
+      } catch (err) {}
+    }
   }, [state.volume]);
 
-  // Ambient sounds control - synchronized with murotal playback
+  // Ambient sounds control - synchronized with murotal playback (remains dry and independent)
   useEffect(() => {
     AMBIENT_SOUNDS.forEach(sound => {
       const config = state.ambientSounds[sound.id];
@@ -552,11 +972,15 @@ export function AppProvider({ children }) {
     playNext,
     playPrev,
     showToast,
+    toggleEpicAmbience,
+    ensureAudioContext,
     QARI_MAP,
     GRADIENTS,
     getGradient,
     AMBIENT_SOUNDS,
     AMBIENT_PRESETS,
+    MUROTAL_EFFECT_PRESETS,
+    DEFAULT_EFFECT_SETTINGS,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

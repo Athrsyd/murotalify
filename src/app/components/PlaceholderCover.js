@@ -118,35 +118,254 @@ export function GeometricWatermark({ type = 'focus', opacity = 0.25 }) {
 export const PLACEHOLDER_THEMES = {
   focus: {
     id: 'focus',
-    title: 'Focus & Work',
-    subtitle: 'Murotal penenang untuk fokus dan produktivitas',
+    title: 'Fokus & Belajar',
+    subtitle: 'Konsentrasi mental, kelapangan dada, dan ketenangan berpikir',
+    targetWave: 'Gelombang Alpha (8–12 Hz) • Fokus Kerja Mendalam',
     className: 'collection-card-focus',
-    surahIds: [55, 67, 36, 94], // Ar-Rahman, Al-Mulk, Yasin, Al-Insyirah
+    surahIds: [94, 20, 87, 55, 35, 67], // Al-Insyirah, Thaha, Al-A'la, Ar-Rahman, Fatir, Al-Mulk
+    defaultQari: '01', // Syaikh Abdullah Al-Juhany
+    qariName: 'Abdullah Al-Juhany',
+    qariMaqam: 'Rast & Bayati (Tempo tadwir stabil & artikulasi huruf tegas)',
     ambientSound: 'nature',
+    ambientSoundName: 'Suara Alam',
+    ambientVolume: 0.30,
+    murotalVolume: 0.70,
+    effectPreset: 'khusyuk', // Jernih & Khidmat
+    effectPresetName: 'Jernih & Khidmat',
+    tracks: [
+      {
+        nomor: 94,
+        namaLatin: 'Al-Insyirah',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–8',
+        dalil: 'Penenang beban pikiran, kelapangan dada dari rasa cemas dan letih belajar (fa inna ma\'al \'usri yusra).',
+      },
+      {
+        nomor: 20,
+        namaLatin: 'Thaha',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 1–36 & 114',
+        dalil: 'Doa Nabi Musa meminta kelapangan urusan (Rabbi-syrahli shadrii) & permohonan ilmu (Rabbi zidnii \'ilmaa).',
+      },
+      {
+        nomor: 87,
+        namaLatin: 'Al-A\'la',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–19',
+        dalil: 'Janji kemudahan mengingat dan memahami ilmu hafalan (Sanuqri\'uka falaa tansaa).',
+      },
+      {
+        nomor: 55,
+        namaLatin: 'Ar-Rahman',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 1–30',
+        dalil: 'Harmoni berpikir teratur dan pengingat hakikat ilmu (\'Allamal-Qur\'an, khalaqal-insan, \'allamahul-bayan).',
+      },
+      {
+        nomor: 35,
+        namaLatin: 'Fatir',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 27–29',
+        dalil: 'Etika penuntut ilmu dan kekhusyukan hamba yang berpengetahuan (Innama yakhsyallaha min \'ibadihil-\'ulama\').',
+      },
+      {
+        nomor: 67,
+        namaLatin: 'Al-Mulk',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 1–15',
+        dalil: 'Stimulasi nalar observatif melalui kesempurnaan ciptaan langit tanpa cela.',
+      },
+    ],
   },
   recitations: {
     id: 'recitations',
-    title: 'Most Beautiful Recitations',
-    subtitle: 'Lantunan ayat paling merdu dan menyentuh hati',
+    title: 'Tilawah Syahdu',
+    subtitle: 'Lantunan penuh penghayatan yang menggetarkan kalbu',
+    targetWave: 'Katarsis Emosional & Tadabbur Mendalam',
     className: 'collection-card-recitations',
-    surahIds: [1, 19, 12, 55, 18], // Al-Fatihah, Maryam, Yusuf, Ar-Rahman, Al-Kahf
-    ambientSound: 'bird',
+    surahIds: [19, 12, 18, 25, 50, 55], // Maryam, Yusuf, Al-Kahf, Al-Furqan, Qaf, Ar-Rahman
+    defaultQari: '06', // Syaikh Yasser Al-Dosari
+    qariName: 'Yasser Al-Dosari',
+    qariMaqam: 'Kurd & Hijaz (Vokal haru buka\'iyyah & resonansi dada megah)',
+    ambientSound: null, // Clean audio
+    ambientSoundName: 'Audio Jernih (Tanpa Suara Alam)',
+    ambientVolume: 0.0,
+    murotalVolume: 0.95,
+    effectPreset: 'kubah', // Mendalam & Mengalun
+    effectPresetName: 'Mendalam & Mengalun',
+    tracks: [
+      {
+        nomor: 19,
+        namaLatin: 'Maryam',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 1–36',
+        dalil: 'Kisah munajat lirih Nabi Zakariya (nidaa-an khafiyya) dan mukjizat Maryam dengan rima akhir menyentuh kalbu.',
+      },
+      {
+        nomor: 12,
+        namaLatin: 'Yusuf',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 1–34 & 83–93',
+        dalil: 'Kisah terindah (Ahsan al-Qashash), kepasrahan Nabi Ya\'qub (Innama asykuu bats-tsi wa huznii ilallah).',
+      },
+      {
+        nomor: 18,
+        namaLatin: 'Al-Kahf',
+        format: 'Ayat Pilihan',
+        ayatRange: '10 Awal & 10 Akhir',
+        dalil: 'Perlindungan dari fitnah (HR. Muslim no. 809) dan ayat penutup tentang kerinduan berjumpa Allah.',
+      },
+      {
+        nomor: 25,
+        namaLatin: 'Al-Furqan',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 63–77',
+        dalil: 'Potret hamba ar-Rahman yang berjalan rendah hati dan bermunajat di keheningan malam.',
+      },
+      {
+        nomor: 50,
+        namaLatin: 'Qaf',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 16–35',
+        dalil: 'Keintiman Allah yang lebih dekat dari urat leher (Wa nahnu aqrabu ilaihi min hablil-warid) dan kabar surga.',
+      },
+      {
+        nomor: 55,
+        namaLatin: 'Ar-Rahman',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–78',
+        dalil: 'Pengantin Al-Qur\'an (\'Arusul Qur\'an), perayaan limpahan nikmat dan rahmat Ilahi.',
+      },
+    ],
   },
   sleep: {
     id: 'sleep',
-    title: 'Sleep Mode',
-    subtitle: 'Surat penenang tidur & istirahat malam',
+    title: 'Pengantar Tidur',
+    subtitle: 'Sunnah malam dan zikir perlindungan istirahat lelap',
+    targetWave: 'Gelombang Theta & Delta • Relaksasi Parasimpatis',
     className: 'collection-card-sleep',
-    surahIds: [67, 32, 76, 93, 112, 113, 114], // Al-Mulk, As-Sajdah, Al-Insan, Ad-Duha, Muawwidzat
+    surahIds: [67, 32, 2, 76, 112, 113, 114], // Al-Mulk, As-Sajdah, Al-Baqarah, Al-Insan, Muawwidzat
+    defaultQari: '02', // Syaikh Abdul Muhsin Al-Qasim
+    qariName: 'Abdul Muhsin Al-Qasim',
+    qariMaqam: 'Nahawand & Bayati (Bariton teduh bertempo tenang)',
     ambientSound: 'rain',
+    ambientSoundName: 'Suara Hujan',
+    ambientVolume: 0.40,
+    murotalVolume: 0.60,
+    effectPreset: 'nabawi', // Tenang & Syahdu
+    effectPresetName: 'Tenang & Syahdu',
+    tracks: [
+      {
+        nomor: 67,
+        namaLatin: 'Al-Mulk',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–30',
+        dalil: 'Sunnah malam Rasulullah ﷺ dan penyelamat dari siksa kubur (HR. At-Tirmidzi no. 2891).',
+      },
+      {
+        nomor: 32,
+        namaLatin: 'As-Sajdah',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–30',
+        dalil: 'Sunnah Nabawiyyah dibaca sebelum tidur setiap malam (HR. Ahmad no. 14249 & At-Tirmidzi no. 3404).',
+      },
+      {
+        nomor: 2,
+        namaLatin: 'Al-Baqarah',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Khawatim (2 Ayat Terakhir)',
+        dalil: 'Penjagaan malam dan kecukupan dari marabahaya serta insomnia (HR. Bukhari no. 5009 & Muslim no. 808).',
+      },
+      {
+        nomor: 76,
+        namaLatin: 'Al-Insan',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 1–22',
+        dalil: 'Kedamaian negeri akhirat dan ketenangan surga yang sejuk menghadirkan relaksasi jiwa.',
+      },
+      {
+        nomor: 112,
+        namaLatin: 'Al-Ikhlas',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–4',
+        dalil: 'Al-Mu\'awwidzat dibaca 3x dan ditiupkan ke telapak tangan sebelum tidur (HR. Bukhari no. 5017).',
+      },
+      {
+        nomor: 113,
+        namaLatin: 'Al-Falaq',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–5',
+        dalil: 'Perlindungan dari kegelapan malam apabila telah gelap gulita (ghasiqin idza waqab).',
+      },
+      {
+        nomor: 114,
+        namaLatin: 'An-Nas',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–6',
+        dalil: 'Benteng dari bisikan was-was setan saat hendak terlelap.',
+      },
+    ],
   },
   ruqia: {
     id: 'ruqia',
-    title: 'Duaa & Ruqia',
-    subtitle: 'Ayat perlindungan & doa penawar hati',
+    title: 'Doa & Ruqyah',
+    subtitle: 'Ayat perlindungan tauhid, penawar batin, dan benteng diri',
+    targetWave: 'Tazkiyatun Nafs & Proteksi Spiritual',
     className: 'collection-card-ruqia',
-    surahIds: [1, 2, 109, 112, 113, 114], // Al-Fatihah, Al-Baqarah, Muawwidzat
-    ambientSound: 'water-drop',
+    surahIds: [1, 2, 59, 112, 113, 114], // Al-Fatihah, Al-Baqarah, Al-Hasyr, Muawwidzat
+    defaultQari: '05', // Syaikh Misyari Rasyid Al-Afasy
+    qariName: 'Misyari Rasyid Al-Afasy',
+    qariMaqam: 'Kurd & Ajam (Artikulasi tajwid tegas, makhraj isti\'la kokoh)',
+    ambientSound: 'water',
+    ambientSoundName: 'Air Mengalir',
+    ambientVolume: 0.20,
+    murotalVolume: 0.80,
+    effectPreset: 'haram', // Megah & Luas
+    effectPresetName: 'Megah & Luas',
+    tracks: [
+      {
+        nomor: 1,
+        namaLatin: 'Al-Fatihah',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–7',
+        dalil: 'Induk segala kesembuhan (Asy-Syifaa\' & Ar-Ruqyah) sesuai sabda Nabi ﷺ (HR. Bukhari no. 5736).',
+      },
+      {
+        nomor: 2,
+        namaLatin: 'Al-Baqarah',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat Kursi (255) & Ayat 1–5, 284–286',
+        dalil: 'Rumah yang dibacakan Al-Baqarah tidak dimasuki setan (HR. Muslim no. 780); Ayat Kursi adalah ayat teragung penjaga diri.',
+      },
+      {
+        nomor: 59,
+        namaLatin: 'Al-Hasyr',
+        format: 'Ayat Pilihan',
+        ayatRange: 'Ayat 21–24 (Akhir Al-Hasyr)',
+        dalil: 'Keagungan Al-Qur\'an yang meluluhkan kesombongan dan serangkaian Asmaul Husna penjaga jiwa.',
+      },
+      {
+        nomor: 112,
+        namaLatin: 'Al-Ikhlas',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–4',
+        dalil: 'Kemurnian tauhid; membacanya setara sepertiga Al-Qur\'an (HR. Bukhari no. 5013).',
+      },
+      {
+        nomor: 113,
+        namaLatin: 'Al-Falaq',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–5',
+        dalil: 'Benteng penangkal sihir, hasad dengki, dan kejahatan makhluk di kala gelap.',
+      },
+      {
+        nomor: 114,
+        namaLatin: 'An-Nas',
+        format: 'Surah Utuh',
+        ayatRange: 'Ayat 1–6',
+        dalil: 'Perlindungan dari bisikan was-was jin dan manusia (HR. Abu Dawud no. 5082).',
+      },
+    ],
   },
 };
 

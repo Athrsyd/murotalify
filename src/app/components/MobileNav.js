@@ -15,12 +15,12 @@ export default function MobileNav() {
       <button
         className={`mobile-nav-item ${currentView === 'home' ? 'active' : ''}`}
         onClick={() => handleNav('home')}
-        title="Home"
+        title="Beranda"
       >
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12.5 3.247a1 1 0 0 0-1 0L4 7.577V20h4.5v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v6H20V7.577l-7.5-4.33zm-2-1.732a3 3 0 0 1 3 0l7.5 4.33a2 2 0 0 1 1 1.732V21a1 1 0 0 1-1 1h-6.5a1 1 0 0 1-1-1v-6h-3v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.577a2 2 0 0 1 1-1.732l7.5-4.33z" />
         </svg>
-        <span>Home</span>
+        <span>Beranda</span>
       </button>
 
       <button
@@ -37,12 +37,12 @@ export default function MobileNav() {
       <button
         className={`mobile-nav-item ${currentView === 'library' || currentView === 'playlist' ? 'active' : ''}`}
         onClick={() => handleNav('library')}
-        title="Koleksi & Playlist"
+        title="Pustaka & Daftar Putar"
       >
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.464a1 1 0 0 0-.5-.866l-6-3.464zM9 2a1 1 0 0 0-1 1v18a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1z" />
         </svg>
-        <span>Library</span>
+        <span>Pustaka</span>
       </button>
 
       <button
@@ -53,7 +53,7 @@ export default function MobileNav() {
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 3c.552 0 1 .448 1 1v16c0 .552-.448 1-1 1s-1-.448-1-1V4c0-.552.448-1 1-1zm-4 4c.552 0 1 .448 1 1v8c0 .552-.448 1-1 1s-1-.448-1-1V8c0-.552.448-1 1-1zm8 0c.552 0 1 .448 1 1v8c0 .552-.448 1-1 1s-1-.448-1-1V8c0-.552.448-1 1-1zm-12 3c.552 0 1 .448 1 1v2c0 .552-.448 1-1 1s-1-.448-1-1v-2c0-.552.448-1 1-1zm16 0c.552 0 1 .448 1 1v2c0 .552-.448 1-1 1s-1-.448-1-1v-2c0-.552.448-1 1-1z" />
         </svg>
-        <span>Ambient</span>
+        <span>Suara Alam</span>
       </button>
     </nav>
   );

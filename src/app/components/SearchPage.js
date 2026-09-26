@@ -11,8 +11,8 @@ function getWatermarkType(nomor) {
 }
 
 export default function SearchPage() {
-  const { state, dispatch, playTrack, getGradient, showToast } = useApp();
-  const { surahList, searchQuery, selectedQari, targetPlaylistId, playlists } = state;
+  const { state, dispatch, playTrack, togglePlay, getGradient, showToast } = useApp();
+  const { surahList, searchQuery, selectedQari, targetPlaylistId, playlists, currentTrack, isPlaying } = state;
 
   const targetPlaylist = playlists.find(p => p.id === targetPlaylistId);
 
@@ -37,6 +37,15 @@ export default function SearchPage() {
 
   const handlePlaySurah = useCallback((surah, e) => {
     e.stopPropagation();
+    const isThisSurahPlaying = currentTrack?.surahNumber === surah.nomor
+      && currentTrack?.type === 'full'
+      && isPlaying;
+
+    if (isThisSurahPlaying) {
+      togglePlay();
+      return;
+    }
+
     playTrack({
       surahNumber: surah.nomor,
       surahName: surah.namaLatin,
@@ -45,7 +54,7 @@ export default function SearchPage() {
       audioUrl: surah.audioFull[selectedQari],
       type: 'full',
     });
-  }, [selectedQari, playTrack]);
+  }, [selectedQari, playTrack, currentTrack, isPlaying, togglePlay]);
 
   const handleCardClick = useCallback((surah) => {
     dispatch({ type: 'NAVIGATE', payload: { view: 'surah', surahNumber: surah.nomor } });
@@ -106,7 +115,7 @@ export default function SearchPage() {
                 Mode Tambah Surat ke: <strong>{targetPlaylist.name}</strong>
               </div>
               <div className="target-desc">
-                {targetPlaylist.surahs.length} surat dalam playlist ini • Klik tombol <strong>+</strong> pada surat untuk menambahkan
+                {targetPlaylist.surahs.length} surat dalam daftar putar ini • Klik tombol <strong>+</strong> pada surat untuk menambahkan
               </div>
             </div>
           </div>
@@ -117,7 +126,7 @@ export default function SearchPage() {
               dispatch({ type: 'NAVIGATE', payload: { view: 'playlist', playlistId: targetPlaylist.id } });
             }}
           >
-            Selesai & Kembali ke Playlist
+            Selesai & Kembali ke Daftar Putar
           </button>
         </div>
       )}
@@ -195,13 +204,13 @@ export default function SearchPage() {
                     <button
                       className={`surah-card-add-btn ${isAddedToTarget ? 'is-added' : ''}`}
                       onClick={(e) => handleAddToPlaylist(surah, e)}
-                      aria-label={`Tambah ${surah.namaLatin} ke playlist`}
+                      aria-label={`Tambah ${surah.namaLatin} ke daftar putar`}
                       title={
                         targetPlaylist
                           ? isAddedToTarget
                             ? `Sudah ada di ${targetPlaylist.name} (klik untuk hapus)`
                             : `Tambah ke ${targetPlaylist.name}`
-                          : 'Tambah ke Playlist'
+                          : 'Tambah ke Daftar Putar'
                       }
                     >
                       {isAddedToTarget ? (

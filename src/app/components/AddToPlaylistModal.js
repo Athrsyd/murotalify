@@ -72,7 +72,7 @@ export default function AddToPlaylistModal() {
             </div>
             <div>
               <h2 id="add-to-playlist-title" className="modal-title">
-                Tambah ke Playlist
+                Tambah ke Daftar Putar
               </h2>
               <div className="add-modal-surah-meta">
                 <span className="add-modal-surah-latin">{addToPlaylistSurah.namaLatin}</span>
@@ -101,9 +101,9 @@ export default function AddToPlaylistModal() {
           {playlists.length === 0 ? (
             <div className="add-playlist-empty">
               <div className="add-playlist-empty-icon">🎵</div>
-              <p className="add-playlist-empty-title">Belum ada playlist</p>
+              <p className="add-playlist-empty-title">Belum ada daftar putar</p>
               <p className="add-playlist-empty-desc">
-                Buat playlist pertamamu untuk menyimpan dan mengorganisir surat-surat favorit.
+                Buat daftar putar pertamamu untuk menyimpan dan mengorganisir surat-surat favorit.
               </p>
               <button
                 type="button"
@@ -111,12 +111,12 @@ export default function AddToPlaylistModal() {
                 style={{ marginTop: 12 }}
                 onClick={handleOpenCreatePlaylist}
               >
-                + Buat Playlist Baru
+                + Buat Daftar Putar Baru
               </button>
             </div>
           ) : (
             <>
-              <div className="add-playlist-list-label">Pilih Playlist Tujuan:</div>
+              <div className="add-playlist-list-label">Pilih Daftar Putar Tujuan:</div>
               <div className="add-playlist-list">
                 {playlists.map((playlist, idx) => {
                   const isAlreadyIn = playlist.surahs.some(s => s.nomor === addToPlaylistSurah.nomor);
@@ -141,7 +141,7 @@ export default function AddToPlaylistModal() {
                       </div>
                       <div className="add-playlist-item-action">
                         {isAlreadyIn ? (
-                          <span className="add-badge-added" title="Klik untuk menghapus dari playlist">
+                          <span className="add-badge-added" title="Klik untuk menghapus dari daftar putar">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                               <polyline points="20 6 9 17 4 12" />
                             </svg>
@@ -183,7 +183,7 @@ export default function AddToPlaylistModal() {
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            Buat Playlist Baru
+            Buat Daftar Putar Baru
           </button>
           <button type="button" className="btn-secondary" onClick={handleClose}>
             Selesai

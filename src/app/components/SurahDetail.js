@@ -11,7 +11,7 @@ function getWatermarkType(nomor) {
 }
 
 export default function SurahDetail() {
-  const { state, dispatch, playTrack, getGradient, QARI_MAP } = useApp();
+  const { state, dispatch, playTrack, togglePlay, getGradient, QARI_MAP } = useApp();
   const { currentSurahNumber, selectedQari, currentTrack, isPlaying, surahList } = state;
   const [surahData, setSurahData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,15 @@ export default function SurahDetail() {
 
   const handlePlayFull = useCallback(() => {
     if (!surahData) return;
-    const surahInfo = surahList.find(s => s.nomor === surahData.nomor);
+    const isThisSurahPlaying = currentTrack?.surahNumber === surahData.nomor
+      && currentTrack?.type === 'full'
+      && isPlaying;
+
+    if (isThisSurahPlaying) {
+      togglePlay();
+      return;
+    }
+
     const audioUrl = surahData.audioFull[selectedQari];
     playTrack({
       surahNumber: surahData.nomor,
@@ -54,10 +62,20 @@ export default function SurahDetail() {
       type: 'full',
     }));
     dispatch({ type: 'SET_QUEUE', payload: queue });
-  }, [surahData, selectedQari, surahList, playTrack, dispatch]);
+  }, [surahData, selectedQari, surahList, playTrack, dispatch, currentTrack, isPlaying, togglePlay]);
 
   const handlePlayAyat = useCallback((ayat) => {
     if (!surahData) return;
+    const isThisAyatPlaying = currentTrack?.surahNumber === surahData.nomor
+      && currentTrack?.ayatNumber === ayat.nomorAyat
+      && currentTrack?.type === 'ayat'
+      && isPlaying;
+
+    if (isThisAyatPlaying) {
+      togglePlay();
+      return;
+    }
+
     const audioUrl = ayat.audio[selectedQari];
     playTrack({
       surahNumber: surahData.nomor,
@@ -80,7 +98,7 @@ export default function SurahDetail() {
       ayatNumber: a.nomorAyat,
     }));
     dispatch({ type: 'SET_QUEUE', payload: queue });
-  }, [surahData, selectedQari, playTrack, dispatch]);
+  }, [surahData, selectedQari, playTrack, dispatch, currentTrack, isPlaying, togglePlay]);
 
   const handleAddToPlaylist = useCallback((playlistId) => {
     if (!surahData) return;
@@ -100,7 +118,7 @@ export default function SurahDetail() {
         },
       },
     });
-    dispatch({ type: 'SET_TOAST', payload: `Ditambahkan ke playlist` });
+    dispatch({ type: 'SET_TOAST', payload: `Ditambahkan ke daftar putar` });
     setTimeout(() => dispatch({ type: 'SET_TOAST', payload: null }), 3000);
   }, [surahData, surahList, dispatch]);
 
@@ -173,13 +191,13 @@ export default function SurahDetail() {
               },
             });
           }}
-          title="Tambah Surat Ini ke Playlist"
+          title="Tambah Surat Ini ke Daftar Putar"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          <span>Tambah ke Playlist</span>
+          <span>Tambah ke Daftar Putar</span>
         </button>
       </div>
 

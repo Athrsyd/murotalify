@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import Sidebar from './Sidebar';
 import NowPlayingBar from './NowPlayingBar';
 import AmbientMixer from './AmbientMixer';
+import MurotalEffectPanel from './MurotalEffectPanel';
 import HomePage from './HomePage';
 import SearchPage from './SearchPage';
 import SurahDetail from './SurahDetail';
@@ -88,6 +89,7 @@ export default function AppShell() {
       <NowPlayingBar />
       <MobileNav />
       <AmbientMixer />
+      <MurotalEffectPanel />
       <CreatePlaylistModal />
       <AddToPlaylistModal />
       <ContextMenu />

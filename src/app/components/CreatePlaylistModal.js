@@ -15,14 +15,14 @@ const PLAYLIST_ICONS = [
 ];
 
 const GRADIENT_PRESETS = [
-  { id: 'gradient-emerald', name: 'Emerald', color: '#10b981' },
-  { id: 'gradient-teal', name: 'Teal', color: '#14b8a6' },
-  { id: 'gradient-blue', name: 'Ocean', color: '#3b82f6' },
-  { id: 'gradient-indigo', name: 'Deep Sea', color: '#6366f1' },
-  { id: 'gradient-purple', name: 'Amethyst', color: '#a855f7' },
-  { id: 'gradient-rose', name: 'Rose', color: '#f43f5e' },
-  { id: 'gradient-amber', name: 'Amber', color: '#f59e0b' },
-  { id: 'gradient-gold', name: 'Gold', color: '#eab308' },
+  { id: 'gradient-emerald', name: 'Zamrud', color: '#10b981' },
+  { id: 'gradient-teal', name: 'Toska', color: '#14b8a6' },
+  { id: 'gradient-blue', name: 'Samudera', color: '#3b82f6' },
+  { id: 'gradient-indigo', name: 'Laut Dalam', color: '#6366f1' },
+  { id: 'gradient-purple', name: 'Ungu', color: '#a855f7' },
+  { id: 'gradient-rose', name: 'Mawar', color: '#f43f5e' },
+  { id: 'gradient-amber', name: 'Jingga', color: '#f59e0b' },
+  { id: 'gradient-gold', name: 'Emas', color: '#eab308' },
 ];
 
 export default function CreatePlaylistModal() {
@@ -56,7 +56,7 @@ export default function CreatePlaylistModal() {
       createdAt: Date.now(),
     };
     dispatch({ type: 'ADD_PLAYLIST', payload: newPlaylist });
-    showToast(`Playlist "${newPlaylist.name}" berhasil dibuat`);
+    showToast(`Daftar putar "${newPlaylist.name}" berhasil dibuat`);
     setName('');
     setDescription('');
     setSelectedIcon('📖');
@@ -85,7 +85,7 @@ export default function CreatePlaylistModal() {
               <span>{selectedIcon}</span>
             </div>
             <div>
-              <h2 id="create-playlist-title" className="modal-title">Buat Playlist Baru</h2>
+              <h2 id="create-playlist-title" className="modal-title">Buat Daftar Putar Baru</h2>
               <p className="modal-subtitle">Kumpulkan surat-surat pilihanmu dalam satu tempat</p>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function CreatePlaylistModal() {
           {/* Playlist Name Input */}
           <div className="form-group">
             <label className="form-label" htmlFor="playlist-name-input">
-              Nama Playlist <span className="required-star">*</span>
+              Nama Daftar Putar <span className="required-star">*</span>
             </label>
             <div className="input-with-icon">
               <input
@@ -133,7 +133,7 @@ export default function CreatePlaylistModal() {
             <textarea
               id="playlist-desc-input"
               className="glass-input modal-input modal-textarea"
-              placeholder="Ceritakan tentang kumpulan surat dalam playlist ini..."
+              placeholder="Ceritakan tentang kumpulan surat dalam daftar putar ini..."
               rows={2}
               maxLength={120}
               value={description}
@@ -197,7 +197,7 @@ export default function CreatePlaylistModal() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
-            Buat Playlist
+            Buat Daftar Putar
           </button>
         </div>
       </div>

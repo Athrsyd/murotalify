@@ -36,7 +36,7 @@ export default function LibraryPage() {
       <div className="library-header-section">
         <div>
           <h1 className="library-main-title">Koleksi Saya</h1>
-          <p className="library-subtitle">Kelola playlist favorit dan riwayat mendengarkan Al-Quran</p>
+          <p className="library-subtitle">Kelola daftar putar favorit dan riwayat mendengarkan Al-Quran</p>
         </div>
         <button
           className="btn-primary library-create-btn"
@@ -45,13 +45,13 @@ export default function LibraryPage() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M5 12h14" />
           </svg>
-          Buat Playlist
+          Buat Daftar Putar
         </button>
       </div>
 
       {/* Playlists Grid */}
       <div className="section-header">
-        <h2 className="section-title">Playlist ({playlists.length})</h2>
+        <h2 className="section-title">Daftar Putar ({playlists.length})</h2>
       </div>
 
       <div className="playlist-cards-grid">
@@ -67,7 +67,7 @@ export default function LibraryPage() {
               <path d="M12 5v14M5 12h14" />
             </svg>
           </div>
-          <div className="create-card-title">Buat Playlist Baru</div>
+          <div className="create-card-title">Buat Daftar Putar Baru</div>
           <div className="create-card-desc">Kumpulkan surat pilihanmu</div>
         </div>
 

@@ -71,7 +71,7 @@ export default function PlaylistDetail() {
       type: 'full',
     }));
     dispatch({ type: 'SET_QUEUE', payload: queue });
-    showToast('Memutar playlist secara acak');
+    showToast('Memutar daftar putar secara acak');
   }, [playlist, selectedQari, playTrack, dispatch, showToast]);
 
   const handlePlaySurah = useCallback((surah) => {
@@ -91,13 +91,13 @@ export default function PlaylistDetail() {
       type: 'REMOVE_FROM_PLAYLIST',
       payload: { playlistId: currentPlaylistId, surahNomor },
     });
-    showToast(`${surahName} dihapus dari playlist`);
+    showToast(`${surahName} dihapus dari daftar putar`);
   }, [currentPlaylistId, dispatch, showToast]);
 
   const handleDeletePlaylist = useCallback(() => {
     dispatch({ type: 'DELETE_PLAYLIST', payload: currentPlaylistId });
     dispatch({ type: 'NAVIGATE', payload: { view: 'library' } });
-    showToast('Playlist berhasil dihapus');
+    showToast('Daftar putar berhasil dihapus');
   }, [currentPlaylistId, dispatch, showToast]);
 
   const handleToggleSurah = useCallback((nomor) => {
@@ -111,7 +111,7 @@ export default function PlaylistDetail() {
         type: 'REMOVE_FROM_PLAYLIST',
         payload: { playlistId: currentPlaylistId, surahNomor: nomor },
       });
-      showToast(`${surah.namaLatin} dihapus dari playlist`);
+      showToast(`${surah.namaLatin} dihapus dari daftar putar`);
     } else {
       dispatch({
         type: 'ADD_TO_PLAYLIST',
@@ -127,7 +127,7 @@ export default function PlaylistDetail() {
           },
         },
       });
-      showToast(`${surah.namaLatin} ditambahkan ke playlist`);
+      showToast(`${surah.namaLatin} ditambahkan ke daftar putar`);
     }
   }, [playlist, surahList, currentPlaylistId, dispatch, showToast]);
 
@@ -169,14 +169,14 @@ export default function PlaylistDetail() {
     return (
       <div className="empty-state playlist-not-found">
         <div className="empty-state-icon">🔍</div>
-        <div className="empty-state-title">Playlist Tidak Ditemukan</div>
-        <p className="empty-state-text">Playlist ini mungkin sudah dihapus atau tidak tersedia.</p>
+        <div className="empty-state-title">Daftar Putar Tidak Ditemukan</div>
+        <p className="empty-state-text">Daftar putar ini mungkin sudah dihapus atau tidak tersedia.</p>
         <button
           className="btn-primary"
           style={{ marginTop: 20 }}
           onClick={() => dispatch({ type: 'NAVIGATE', payload: { view: 'library' } })}
         >
-          Kembali ke Library
+          Kembali ke Pustaka
         </button>
       </div>
     );
@@ -234,7 +234,7 @@ export default function PlaylistDetail() {
             className={`play-btn-large ${isPlaylistPlaying ? 'is-playing' : ''}`}
             onClick={handlePlayAll}
             disabled={playlist.surahs.length === 0}
-            title={playlist.surahs.length === 0 ? 'Playlist masih kosong' : 'Putar Semua'}
+            title={playlist.surahs.length === 0 ? 'Daftar putar masih kosong' : 'Putar Semua'}
             style={{ opacity: playlist.surahs.length === 0 ? 0.45 : 1 }}
           >
             {isPlaylistPlaying ? (
@@ -268,7 +268,7 @@ export default function PlaylistDetail() {
           <button
             className="action-pill-btn btn-highlight"
             onClick={() => setIsAddModalOpen(true)}
-            title="Tambah Surat Baru ke Playlist Ini"
+            title="Tambah Surat Baru ke Daftar Putar Ini"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -281,7 +281,7 @@ export default function PlaylistDetail() {
         <div className="action-bar-right">
           {confirmDelete ? (
             <div className="confirm-delete-box">
-              <span className="confirm-text">Hapus playlist?</span>
+              <span className="confirm-text">Hapus daftar putar?</span>
               <button className="confirm-btn danger" onClick={handleDeletePlaylist}>
                 Ya, Hapus
               </button>
@@ -293,7 +293,7 @@ export default function PlaylistDetail() {
             <button
               className="action-delete-btn"
               onClick={() => setConfirmDelete(true)}
-              title="Hapus Playlist Ini"
+              title="Hapus Daftar Putar Ini"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="3 6 5 6 21 6" />
@@ -428,7 +428,7 @@ export default function PlaylistDetail() {
                     <button
                       className="row-remove-btn"
                       onClick={(e) => handleRemove(surah.nomor, surah.namaLatin, e)}
-                      title={`Hapus ${surah.namaLatin} dari playlist`}
+                      title={`Hapus ${surah.namaLatin} dari daftar putar`}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18" />
@@ -444,7 +444,7 @@ export default function PlaylistDetail() {
           {/* Quick Add Footer if user wants to add more */}
           <div className="playlist-more-suggestions">
             <div className="suggestions-header">
-              <span className="suggestions-title">Tambahkan surat lain ke playlist ini</span>
+              <span className="suggestions-title">Tambahkan surat lain ke daftar putar ini</span>
               <button
                 className="suggestions-browse-link"
                 onClick={() => setIsAddModalOpen(true)}
@@ -591,7 +591,7 @@ export default function PlaylistDetail() {
                           type="button"
                           className="picker-preview-play-btn"
                           onClick={() => handlePlaySurah(s)}
-                          title="Dengarkan preview"
+                          title="Dengarkan pratinjau"
                         >
                           {isCurrentPlaying ? (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">

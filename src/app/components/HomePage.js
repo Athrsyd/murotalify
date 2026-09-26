@@ -11,9 +11,28 @@ function getWatermarkType(nomor) {
   return WATERMARK_TYPES[(nomor - 1) % WATERMARK_TYPES.length];
 }
 
+function PlayPauseGlyph({ active }) {
+  if (active) {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"/>
+      </svg>
+    );
+  }
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z" />
+    </svg>
+  );
+}
+
 export default function HomePage() {
-  const { state, dispatch, playTrack, getGradient, QARI_MAP } = useApp();
-  const { surahList, recentlyPlayed, selectedQari, loading } = state;
+  const { state, dispatch, playTrack, togglePlay, getGradient, QARI_MAP } = useApp();
+  const { surahList, recentlyPlayed, selectedQari, loading, currentTrack, isPlaying } = state;
+
+  const isSurahActive = useCallback((nomor) => {
+    return currentTrack?.surahNumber === nomor && currentTrack?.type === 'full' && isPlaying;
+  }, [currentTrack, isPlaying]);
 
   useEffect(() => {
     if (surahList.length === 0) {
@@ -29,6 +48,15 @@ export default function HomePage() {
 
   const handlePlaySurah = useCallback((surah, e) => {
     e.stopPropagation();
+    const isThisSurahPlaying = currentTrack?.surahNumber === surah.nomor
+      && currentTrack?.type === 'full'
+      && isPlaying;
+
+    if (isThisSurahPlaying) {
+      togglePlay();
+      return;
+    }
+
     const audioUrl = surah.audioFull[selectedQari];
     playTrack({
       surahNumber: surah.nomor,
@@ -50,7 +78,7 @@ export default function HomePage() {
       type: 'full',
     }));
     dispatch({ type: 'SET_QUEUE', payload: queue });
-  }, [selectedQari, surahList, playTrack, dispatch]);
+  }, [selectedQari, surahList, playTrack, dispatch, currentTrack, isPlaying, togglePlay]);
 
   const handleCardClick = useCallback((surah) => {
     dispatch({ type: 'NAVIGATE', payload: { view: 'surah', surahNumber: surah.nomor } });
@@ -140,7 +168,7 @@ export default function HomePage() {
                 className="home-brand-btn-secondary"
                 onClick={() => dispatch({ type: 'TOGGLE_AMBIENT' })}
               >
-                <span>🌧️ Ambient Nature Mixer</span>
+                <span>🌧️ Pengatur Suara Alam</span>
               </button>
             </div>
           </div>
@@ -168,11 +196,9 @@ export default function HomePage() {
                   <button
                     className="recent-card-play"
                     onClick={(e) => handlePlaySurah(surah, e)}
-                    aria-label={`Play ${surah.namaLatin}`}
+                    aria-label={isSurahActive(surah.nomor) ? "Jeda" : `Putar ${surah.namaLatin}`}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z" />
-                    </svg>
+                    <PlayPauseGlyph active={isSurahActive(surah.nomor)} />
                   </button>
                 </div>
               );
@@ -215,19 +241,17 @@ export default function HomePage() {
               <button
                 className="surah-card-play"
                 onClick={(e) => handlePlaySurah(surah, e)}
-                aria-label={`Play ${surah.namaLatin}`}
-                title="Putar Surat"
+                aria-label={isSurahActive(surah.nomor) ? "Jeda" : `Putar ${surah.namaLatin}`}
+                title={isSurahActive(surah.nomor) ? "Jeda Surat" : "Putar Surat"}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z" />
-                </svg>
+                <PlayPauseGlyph active={isSurahActive(surah.nomor)} />
               </button>
 
               <button
                 className="surah-card-add-btn"
                 onClick={(e) => handleAddToPlaylist(surah, e)}
-                aria-label={`Tambah ${surah.namaLatin} ke playlist`}
-                title="Tambah ke Playlist"
+                aria-label={`Tambah ${surah.namaLatin} ke daftar putar`}
+                title="Tambah ke Daftar Putar"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" />
@@ -267,19 +291,17 @@ export default function HomePage() {
               <button
                 className="surah-card-play"
                 onClick={(e) => handlePlaySurah(surah, e)}
-                aria-label={`Play ${surah.namaLatin}`}
-                title="Putar Surat"
+                aria-label={isSurahActive(surah.nomor) ? "Jeda" : `Putar ${surah.namaLatin}`}
+                title={isSurahActive(surah.nomor) ? "Jeda Surat" : "Putar Surat"}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z" />
-                </svg>
+                <PlayPauseGlyph active={isSurahActive(surah.nomor)} />
               </button>
 
               <button
                 className="surah-card-add-btn"
                 onClick={(e) => handleAddToPlaylist(surah, e)}
-                aria-label={`Tambah ${surah.namaLatin} ke playlist`}
-                title="Tambah ke Playlist"
+                aria-label={`Tambah ${surah.namaLatin} ke daftar putar`}
+                title="Tambah ke Daftar Putar"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" />
@@ -319,19 +341,17 @@ export default function HomePage() {
               <button
                 className="surah-card-play"
                 onClick={(e) => handlePlaySurah(surah, e)}
-                aria-label={`Play ${surah.namaLatin}`}
-                title="Putar Surat"
+                aria-label={isSurahActive(surah.nomor) ? "Jeda" : `Putar ${surah.namaLatin}`}
+                title={isSurahActive(surah.nomor) ? "Jeda Surat" : "Putar Surat"}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z" />
-                </svg>
+                <PlayPauseGlyph active={isSurahActive(surah.nomor)} />
               </button>
 
               <button
                 className="surah-card-add-btn"
                 onClick={(e) => handleAddToPlaylist(surah, e)}
-                aria-label={`Tambah ${surah.namaLatin} ke playlist`}
-                title="Tambah ke Playlist"
+                aria-label={`Tambah ${surah.namaLatin} ke daftar putar`}
+                title="Tambah ke Daftar Putar"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" />

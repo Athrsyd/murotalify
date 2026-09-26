@@ -39,7 +39,7 @@ export default function AmbientMixer() {
   return (
     <div className={`ambient-panel ${ambientOpen ? 'open' : ''}`}>
       <div className="ambient-panel-header">
-        <div className="ambient-panel-title">🎧 Ambient Mixer</div>
+        <div className="ambient-panel-title">🎧 Pengatur Suara Alam</div>
         <button
           className="ambient-close-btn"
           onClick={() => dispatch({ type: 'SET_AMBIENT_OPEN', payload: false })}
@@ -75,7 +75,7 @@ export default function AmbientMixer() {
             gap: 8,
           }}>
             <span>⏸️</span>
-            <span>Murotal sedang dijeda — suara ambient otomatis ikut jeda.</span>
+            <span>Murotal sedang dijeda — suara alam otomatis ikut dijeda.</span>
           </div>
         )}
 
@@ -112,7 +112,7 @@ export default function AmbientMixer() {
               <button
                 className={`ambient-sound-toggle ${config.active ? 'active' : ''}`}
                 onClick={() => handleToggle(sound.id)}
-                aria-label={`Toggle ${sound.name}`}
+                aria-label={`Nyalakan atau matikan ${sound.name}`}
               />
             </div>
           );
@@ -122,7 +122,7 @@ export default function AmbientMixer() {
       {/* Presets */}
       <div className="ambient-presets">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <div className="ambient-presets-title">Preset</div>
+          <div className="ambient-presets-title">Pilihan Suasana</div>
           {anyActive && (
             <button
               style={{
@@ -135,7 +135,7 @@ export default function AmbientMixer() {
               }}
               onClick={handleStopAll}
             >
-              Stop Semua
+              Hentikan Semua
             </button>
           )}
         </div>
