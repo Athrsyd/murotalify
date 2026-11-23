@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useReducer, useEffect, useCallback, useRef } from 'react';
 import * as Tone from 'tone';
-import { recordQuotaUsage, recordQuotaSaved, isDataSaverEnabled, setDataSaverEnabled } from '../lib/quotaTracker';
+import { recordQuotaUsage, recordQuotaSaved, isDataSaverEnabled, setDataSaverEnabled, cacheAllAmbientSounds } from '../lib/quotaTracker';
 
 const QARI_MAP = {
   '06': 'Yasser Al-Dosari (⚡ Paling Hemat)',
@@ -417,22 +417,6 @@ function reducer(state, action) {
     case 'SET_TOAST':
       return { ...state, toast: action.payload };
 
-    case 'SET_THEME': {
-      if (typeof window !== 'undefined') {
-        try { localStorage.setItem('murotal_theme', action.payload); } catch (e) {}
-        document.documentElement.setAttribute('data-theme', action.payload);
-      }
-      return { ...state, theme: action.payload };
-    }
-    case 'TOGGLE_THEME': {
-      const nextTheme = state.theme === 'dark' ? 'light' : 'dark';
-      if (typeof window !== 'undefined') {
-        try { localStorage.setItem('murotal_theme', nextTheme); } catch (e) {}
-        document.documentElement.setAttribute('data-theme', nextTheme);
-      }
-      return { ...state, theme: nextTheme };
-    }
-
     case 'SET_DATA_SAVER': {
       setDataSaverEnabled(action.payload);
       return { ...state, dataSaver: action.payload };
@@ -834,13 +818,27 @@ export function AppProvider({ children }) {
         }
       }
 
-      // 7. Restore Theme & Data Saver & Service Worker Setup
-      const savedTheme = localStorage.getItem('murotal_theme') || 'dark';
-      dispatch({ type: 'SET_THEME', payload: savedTheme });
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      // 7. Enforce Dark Mode & Data Saver & Service Worker Setup
+      try { localStorage.removeItem('murotal_theme'); } catch (e) {}
+      document.documentElement.setAttribute('data-theme', 'dark');
 
       const savedDataSaver = isDataSaverEnabled();
       dispatch({ type: 'SET_DATA_SAVER', payload: savedDataSaver });
+
+      // 8. Restore navigation from URL (Deep Linking for SEO & Google Search)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const surahParam = urlParams.get('surah');
+        const viewParam = urlParams.get('view');
+        if (surahParam) {
+          const sNum = parseInt(surahParam, 10);
+          if (!isNaN(sNum) && sNum >= 1 && sNum <= 114) {
+            dispatch({ type: 'NAVIGATE', payload: { view: 'surah', surahNumber: sNum } });
+          }
+        } else if (viewParam) {
+          dispatch({ type: 'NAVIGATE', payload: { view: viewParam } });
+        }
+      } catch (e) {}
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch((err) => {
@@ -858,9 +856,79 @@ export function AppProvider({ children }) {
 
         navigator.serviceWorker.addEventListener('message', handleSwMessage);
       }
+
+      // 9. Pre-cache all Ambient Nature Sounds in background for 100% offline & zero quota usage
+      if ('caches' in window) {
+        const preCacheAmbient = () => {
+          cacheAllAmbientSounds()
+            .then((res) => {
+              if (res?.success && res.newlyCachedBytes > 0) {
+                console.log(`[Cache] Semua suara alam (${res.count} file) berhasil disimpan di cache offline.`);
+              }
+            })
+            .catch((err) => {
+              console.warn('[Cache] Ambient precache:', err);
+            });
+        };
+
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(preCacheAmbient, { timeout: 3500 });
+        } else {
+          setTimeout(preCacheAmbient, 1200);
+        }
+      }
     } catch (e) {
       console.error('Error loading from localStorage:', e);
     }
+  }, []);
+
+  // Synchronize current view and surah with browser URL for SEO, bookmarking & shareability
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const url = new URL(window.location.href);
+      if (state.currentView === 'surah' && state.currentSurahNumber) {
+        url.searchParams.set('surah', state.currentSurahNumber.toString());
+        url.searchParams.delete('view');
+      } else if (state.currentView && state.currentView !== 'home') {
+        url.searchParams.set('view', state.currentView);
+        url.searchParams.delete('surah');
+      } else {
+        url.searchParams.delete('surah');
+        url.searchParams.delete('view');
+      }
+      const newQuery = url.searchParams.toString();
+      const newPath = url.pathname + (newQuery ? `?${newQuery}` : '');
+      if (window.location.pathname + window.location.search !== newPath) {
+        window.history.replaceState(null, '', newPath);
+      }
+    } catch (e) {}
+  }, [state.currentView, state.currentSurahNumber]);
+
+  // Handle browser back / forward buttons (popstate)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handlePopState = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const surahParam = urlParams.get('surah');
+        const viewParam = urlParams.get('view');
+        if (surahParam) {
+          const sNum = parseInt(surahParam, 10);
+          if (!isNaN(sNum) && sNum >= 1 && sNum <= 114) {
+            dispatch({ type: 'NAVIGATE', payload: { view: 'surah', surahNumber: sNum } });
+            return;
+          }
+        }
+        if (viewParam) {
+          dispatch({ type: 'NAVIGATE', payload: { view: viewParam } });
+          return;
+        }
+        dispatch({ type: 'NAVIGATE', payload: { view: 'home' } });
+      } catch (e) {}
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   // Synchronize bypass state with Tone.js gains
@@ -1026,7 +1094,7 @@ export function AppProvider({ children }) {
       if (config.active && state.isPlaying) {
         if (!audioEl) {
           audioEl = new Audio(sound.url);
-          audioEl.preload = 'none';
+          audioEl.preload = 'auto';
           audioEl.loop = true;
           ambientRefs.current[sound.id] = audioEl;
         }
@@ -1041,10 +1109,6 @@ export function AppProvider({ children }) {
       }
     });
   }, [state.ambientSounds, state.isPlaying]);
-
-  const toggleTheme = useCallback(() => {
-    dispatch({ type: 'TOGGLE_THEME' });
-  }, []);
 
   const toggleDataSaver = useCallback(() => {
     const nextVal = !state.dataSaver;
@@ -1062,7 +1126,6 @@ export function AppProvider({ children }) {
     playPrev,
     showToast,
     toggleEpicAmbience,
-    toggleTheme,
     toggleDataSaver,
     ensureAudioContext,
     QARI_MAP,

@@ -13,6 +13,8 @@ import {
   subscribeDataSaver,
   getOfflineCacheInfo,
   clearAllOfflineCache,
+  getAmbientCacheStatus,
+  cacheAllAmbientSounds,
 } from '../lib/quotaTracker';
 
 const emptySubscribe = () => () => {};
@@ -35,11 +37,21 @@ export default function QuotaPage() {
   );
 
   const [cacheInfo, setCacheInfo] = useState({ count: 0, totalBytes: 0, cachedSurahs: [] });
+  const [ambientStatus, setAmbientStatus] = useState({ total: 5, cached: 0, isAllCached: false, totalBytes: 0 });
   const [confirmReset, setConfirmReset] = useState(false);
   const [clearingCache, setClearingCache] = useState(false);
+  const [cachingAmbient, setCachingAmbient] = useState(false);
+
+  useEffect(() => {
+    document.title = "Manajemen & Pelacak Kuota Internet | Murotalify";
+    return () => {
+      document.title = "Murotalify - Dengarkan Murottal Al-Qur'an 30 Juz & Audio Alam Relaksasi";
+    };
+  }, []);
 
   const refreshCacheInfo = useCallback(() => {
     getOfflineCacheInfo().then(setCacheInfo).catch(() => {});
+    getAmbientCacheStatus().then(setAmbientStatus).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -308,6 +320,41 @@ export default function QuotaPage() {
               disabled={clearingCache}
             >
               {clearingCache ? 'Membersihkan...' : 'Kosongkan Cache Lokal'}
+            </button>
+            <button
+              className="quota-cache-ambient-btn"
+              onClick={async () => {
+                if (cachingAmbient) return;
+                setCachingAmbient(true);
+                showToast('⏳ Menyimpan semua suara alam ke cache offline...');
+                const res = await cacheAllAmbientSounds();
+                setCachingAmbient(false);
+                if (res.success) {
+                  refreshCacheInfo();
+                  showToast('✓ Semua 5 suara alam berhasil disimpan di cache offline!');
+                } else {
+                  showToast('Gagal menyimpan cache suara alam.');
+                }
+              }}
+              disabled={cachingAmbient}
+              style={{
+                background: ambientStatus.isAllCached ? 'rgba(16, 185, 129, 0.15)' : 'var(--accent-green)',
+                color: ambientStatus.isAllCached ? '#34d399' : '#fff',
+                border: ambientStatus.isAllCached ? '1px solid rgba(16, 185, 129, 0.3)' : 'none',
+                padding: '9px 16px',
+                borderRadius: '8px',
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {cachingAmbient
+                ? '⏳ Menyimpan...'
+                : ambientStatus.isAllCached
+                ? `✓ Suara Alam Tersimpan (${ambientStatus.cached}/${ambientStatus.total})`
+                : 'Simpan Suara Alam ke Cache (Offline)'}
             </button>
           </div>
         </div>

@@ -168,7 +168,7 @@ export default function HomePage() {
       <div className="home-brand-banner">
         <div className="home-brand-banner-content">
           <div className="home-brand-logo-wrap">
-            <img src="/logo.png" alt="Murotalify Logo" className="home-brand-logo-img" />
+            <img src="/logo.png" alt="Murotalify - Murottal Al-Qur'an & Suara Alam" width={64} height={64} loading="eager" decoding="async" className="home-brand-logo-img" />
           </div>
           <div className="home-brand-text-wrap">
             <div className="home-brand-tag">

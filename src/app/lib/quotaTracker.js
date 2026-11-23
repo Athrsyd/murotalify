@@ -212,6 +212,107 @@ export function resetQuota() {
   setAndNotifyStats(refreshed);
 }
 
+// All 5 Ambient Nature Sounds to cache permanently
+export const AMBIENT_SOUND_FILES = [
+  { id: 'rain', name: 'Suara Hujan', emoji: '🌧️', url: '/sounds/rain.mp3', size: 3477420 },
+  { id: 'water', name: 'Air Mengalir', emoji: '💧', url: '/sounds/water.mp3', size: 869376 },
+  { id: 'nature', name: 'Suara Alam', emoji: '🍃', url: '/sounds/nature.mp3', size: 9665280 },
+  { id: 'bird', name: 'Kicauan Burung', emoji: '🐦', url: '/sounds/bird.mp3', size: 836352 },
+  { id: 'water-drop', name: 'Tetesan Air', emoji: '🫧', url: '/sounds/water-drop.mp3', size: 2191778 },
+];
+
+// Pre-cache all ambient nature sounds into Cache Storage for 100% offline & zero quota usage
+export async function cacheAllAmbientSounds(onProgress) {
+  if (typeof window === 'undefined' || !('caches' in window)) {
+    return { success: false, error: 'Cache API not supported' };
+  }
+
+  try {
+    const cache = await caches.open(AUDIO_CACHE_NAME);
+    let newlyCachedBytes = 0;
+    let cachedCount = 0;
+
+    for (let i = 0; i < AMBIENT_SOUND_FILES.length; i++) {
+      const sound = AMBIENT_SOUND_FILES[i];
+      const cacheKey = new Request(sound.url, { method: 'GET' });
+      let match = await cache.match(cacheKey);
+
+      if (!match) {
+        try {
+          const res = await fetch(sound.url, {
+            method: 'GET',
+            headers: { Accept: 'audio/*' },
+          });
+
+          if (res.ok) {
+            await cache.put(cacheKey, res.clone());
+            const blob = await res.blob();
+            newlyCachedBytes += blob.size;
+
+            recordQuotaUsage({
+              bytes: blob.size,
+              category: 'audio',
+              name: `Simpan Cache Suara Alam: ${sound.name}`,
+            });
+          }
+        } catch (fetchErr) {
+          console.warn(`[QuotaTracker] Gagal mengunduh ${sound.name}:`, fetchErr);
+        }
+      }
+
+      cachedCount++;
+      if (onProgress) {
+        onProgress({
+          current: cachedCount,
+          total: AMBIENT_SOUND_FILES.length,
+          name: sound.name,
+        });
+      }
+    }
+
+    return { success: true, count: cachedCount, newlyCachedBytes };
+  } catch (err) {
+    console.error('[QuotaTracker] Error in cacheAllAmbientSounds:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Inspect how many ambient sounds are stored in Cache Storage
+export async function getAmbientCacheStatus() {
+  if (typeof window === 'undefined' || !('caches' in window)) {
+    return { total: AMBIENT_SOUND_FILES.length, cached: 0, isAllCached: false, totalBytes: 0, details: [] };
+  }
+
+  try {
+    const cache = await caches.open(AUDIO_CACHE_NAME);
+    let cached = 0;
+    let totalBytes = 0;
+    const details = [];
+
+    for (const sound of AMBIENT_SOUND_FILES) {
+      const match = await cache.match(new Request(sound.url));
+      const isCached = !!match;
+      if (isCached) {
+        cached++;
+        const cl = match.headers.get('content-length');
+        const size = cl ? parseInt(cl, 10) : sound.size;
+        totalBytes += size;
+      }
+      details.push({ ...sound, isCached });
+    }
+
+    return {
+      total: AMBIENT_SOUND_FILES.length,
+      cached,
+      isAllCached: cached === AMBIENT_SOUND_FILES.length,
+      totalBytes,
+      details,
+    };
+  } catch (err) {
+    return { total: AMBIENT_SOUND_FILES.length, cached: 0, isAllCached: false, totalBytes: 0, details: [] };
+  }
+}
+
 // Inspect Cache Storage status for offline surahs
 export async function getOfflineCacheInfo() {
   if (typeof window === 'undefined' || !('caches' in window)) {

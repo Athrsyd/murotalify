@@ -1,10 +1,44 @@
 'use client';
 
+import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '../context/AppContext';
+import { getAmbientCacheStatus, cacheAllAmbientSounds, formatBytes } from '../lib/quotaTracker';
 
 export default function AmbientMixer() {
-  const { state, dispatch, AMBIENT_SOUNDS, AMBIENT_PRESETS } = useApp();
+  const { state, dispatch, showToast, AMBIENT_SOUNDS, AMBIENT_PRESETS } = useApp();
   const { ambientOpen, ambientSounds, activePreset } = state;
+  const [cacheStatus, setCacheStatus] = useState({ total: 5, cached: 0, isAllCached: false, totalBytes: 0 });
+  const [caching, setCaching] = useState(false);
+
+  useEffect(() => {
+    if (!ambientOpen) return;
+    let ignore = false;
+    getAmbientCacheStatus()
+      .then((status) => {
+        if (!ignore) {
+          setCacheStatus(status);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      ignore = true;
+    };
+  }, [ambientOpen]);
+
+  const handleCacheAll = async () => {
+    if (caching) return;
+    setCaching(true);
+    showToast?.('⏳ Menyimpan semua suara alam ke memori cache offline...');
+    const result = await cacheAllAmbientSounds();
+    setCaching(false);
+    if (result.success) {
+      const status = await getAmbientCacheStatus();
+      setCacheStatus(status);
+      showToast?.('✓ Semua 5 suara alam berhasil disimpan di cache! Diputar tanpa kuota.');
+    } else {
+      showToast?.('Gagal menyimpan cache suara alam.');
+    }
+  };
 
   if (!ambientOpen) return null;
 
@@ -55,11 +89,56 @@ export default function AmbientMixer() {
         <p style={{
           fontSize: 13,
           color: 'var(--text-secondary)',
-          marginBottom: 16,
+          marginBottom: 12,
           lineHeight: 1.5,
         }}>
           Campurkan suara alam dengan murotal untuk pengalaman mendengarkan yang lebih khusyuk.
         </p>
+
+        {/* Ambient Cache Status Banner */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 12px',
+          background: cacheStatus.isAllCached ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)',
+          border: cacheStatus.isAllCached ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid var(--border-subtle)',
+          borderRadius: '8px',
+          marginBottom: 16,
+          fontSize: 12,
+          gap: 8,
+          flexWrap: 'wrap',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ color: cacheStatus.isAllCached ? '#34d399' : 'var(--text-subdued)', fontSize: 13 }}>
+              {cacheStatus.isAllCached ? '✓' : '⚡'}
+            </span>
+            <span style={{ color: cacheStatus.isAllCached ? '#34d399' : 'var(--text-secondary)', fontWeight: 500 }}>
+              {cacheStatus.isAllCached
+                ? `Semua Suara Alam Tersimpan di Cache (${formatBytes(cacheStatus.totalBytes)})`
+                : `${cacheStatus.cached}/${cacheStatus.total} Suara Alam Tersimpan di Cache`}
+            </span>
+          </div>
+          {!cacheStatus.isAllCached && (
+            <button
+              onClick={handleCacheAll}
+              disabled={caching}
+              style={{
+                fontSize: 11,
+                padding: '4px 10px',
+                borderRadius: '6px',
+                background: 'var(--accent-green)',
+                color: '#fff',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 600,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {caching ? 'Menyimpan...' : 'Simpan Semua (0 KB Kuota)'}
+            </button>
+          )}
+        </div>
 
         {anyActive && !state.isPlaying && (
           <div style={{

@@ -25,6 +25,15 @@ export default function SurahDetail() {
     isAudioCached(url).then(cached => setIsCached(cached));
   }, [surahData, selectedQari]);
 
+  useEffect(() => {
+    if (surahData?.namaLatin) {
+      document.title = `Surat ${surahData.namaLatin} (${surahData.nomor}) - Murottal & Terjemahan | Murotalify`;
+    }
+    return () => {
+      document.title = "Murotalify - Dengarkan Murottal Al-Qur'an 30 Juz & Audio Alam Relaksasi";
+    };
+  }, [surahData]);
+
   const handleSaveOffline = async () => {
     if (!surahData || downloading) return;
     setDownloading(true);

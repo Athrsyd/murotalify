@@ -2,8 +2,34 @@
 const CACHE_NAME = 'murotal-audio-v2';
 const API_CACHE_NAME = 'murotal-api-v2';
 
+// All ambient sounds that must be cached permanently for zero data usage & offline play
+const AMBIENT_SOUNDS_URLS = [
+  '/sounds/rain.mp3',
+  '/sounds/water.mp3',
+  '/sounds/nature.mp3',
+  '/sounds/bird.mp3',
+  '/sounds/water-drop.mp3',
+];
+
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Pre-cache all ambient nature sounds immediately on installation
+      for (const url of AMBIENT_SOUNDS_URLS) {
+        try {
+          const match = await cache.match(url);
+          if (!match) {
+            const res = await fetch(url);
+            if (res.ok) {
+              await cache.put(new Request(url), res);
+            }
+          }
+        } catch (err) {
+          console.warn('[SW] Ambient precache skip:', url, err);
+        }
+      }
+    }).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -30,8 +56,11 @@ async function notifyClients(message) {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // 1. Intercept Audio Requests (/api/audio or .mp3 files)
-  const isAudioRequest = url.pathname.startsWith('/api/audio') || url.pathname.endsWith('.mp3');
+  // 1. Intercept Audio Requests (/api/audio, /sounds/ or .mp3 files)
+  const isAudioRequest =
+    url.pathname.startsWith('/api/audio') ||
+    url.pathname.includes('/sounds/') ||
+    url.pathname.endsWith('.mp3');
 
   if (isAudioRequest) {
     event.respondWith(handleAudioFetch(event.request));
@@ -46,12 +75,22 @@ async function handleAudioFetch(request) {
   const cache = await caches.open(CACHE_NAME);
   let cachedResponse = await cache.match(cacheKey);
 
+  // Fallback match by pathname if domain differs or relative match
+  if (!cachedResponse) {
+    try {
+      const urlObj = new URL(cleanUrl);
+      cachedResponse = await cache.match(urlObj.pathname);
+    } catch (e) {}
+  }
+
+  const isAmbient = request.url.includes('/sounds/') || cleanUrl.includes('/sounds/');
+
   // 1. If not in cache, fetch clean audio and store permanently in Cache Storage
   if (!cachedResponse) {
     try {
       const networkResponse = await fetch(cleanUrl, {
         method: 'GET',
-        headers: { 'Accept': 'audio/*' },
+        headers: { Accept: 'audio/*' },
       });
 
       if (networkResponse.ok) {
@@ -63,9 +102,9 @@ async function handleAudioFetch(request) {
 
         notifyClients({
           type: 'QUOTA_USED',
-          bytes: bytes || 500000,
+          bytes: bytes || (isAmbient ? 2000000 : 500000),
           category: 'audio',
-          name: request.url.includes('sounds/') ? 'Suara Alam (Disimpan ke Cache)' : 'Murotal Audio (Disimpan ke Cache)',
+          name: isAmbient ? 'Suara Alam (Disimpan ke Cache)' : 'Murotal Audio (Disimpan ke Cache)',
         });
 
         cachedResponse = networkResponse;
@@ -78,12 +117,12 @@ async function handleAudioFetch(request) {
     }
   } else {
     // Audio is already cached! Report 100% saved quota
-    const savedBytes = parseInt(cachedResponse.headers.get('content-length') || '500000', 10);
+    const savedBytes = parseInt(cachedResponse.headers.get('content-length') || (isAmbient ? '2500000' : '500000'), 10);
     notifyClients({
       type: 'QUOTA_SAVED',
       bytes: savedBytes,
       category: 'audio',
-      name: 'Murotal (Offline Cache - 0 KB Kuota)',
+      name: isAmbient ? 'Suara Alam (Offline Cache - 0 KB Kuota)' : 'Murotal (Offline Cache - 0 KB Kuota)',
     });
   }
 

@@ -20,7 +20,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="sidebar-logo" onClick={() => handleNav('home')} style={{ cursor: 'pointer' }}>
         <div className="sidebar-logo-icon">
-          <img src="/logo.png" alt="Murotalify Logo" className="sidebar-logo-img" />
+          <img src="/logo.png" alt="Murotalify - Audio Al-Qur'an 30 Juz & Suara Alam" width={40} height={40} loading="eager" decoding="async" className="sidebar-logo-img" />
         </div>
         <div className="sidebar-logo-title-wrap">
           <span className="sidebar-logo-text">Murotalify</span>

@@ -6,6 +6,13 @@ export default function LibraryPage() {
   const { state, dispatch, playTrack, getGradient, QARI_MAP } = useApp();
   const { playlists, recentlyPlayed, surahList, selectedQari, currentTrack, isPlaying } = state;
 
+  useEffect(() => {
+    document.title = "Koleksi & Pustaka Tilawah Al-Qur'an | Murotalify";
+    return () => {
+      document.title = "Murotalify - Dengarkan Murottal Al-Qur'an 30 Juz & Audio Alam Relaksasi";
+    };
+  }, []);
+
   const handlePlayPlaylistDirect = (playlist, e) => {
     e.stopPropagation();
     if (!playlist || playlist.surahs.length === 0) return;

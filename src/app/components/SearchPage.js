@@ -14,6 +14,13 @@ export default function SearchPage() {
   const { state, dispatch, playTrack, togglePlay, getGradient, showToast } = useApp();
   const { surahList, searchQuery, selectedQari, targetPlaylistId, playlists, currentTrack, isPlaying } = state;
 
+  useEffect(() => {
+    document.title = "Cari Surat & Qari Al-Qur'an | Murotalify";
+    return () => {
+      document.title = "Murotalify - Dengarkan Murottal Al-Qur'an 30 Juz & Audio Alam Relaksasi";
+    };
+  }, []);
+
   const targetPlaylist = playlists.find(p => p.id === targetPlaylistId);
 
   useEffect(() => {

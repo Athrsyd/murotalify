@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function LandingPage({ standalone = false }) {
@@ -8,6 +8,13 @@ export default function LandingPage({ standalone = false }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [expandedFaq, setExpandedFaq] = useState(null);
+
+  useEffect(() => {
+    document.title = "Pusat Informasi & Panduan Fitur | Murotalify";
+    return () => {
+      document.title = "Murotalify - Dengarkan Murottal Al-Qur'an 30 Juz & Audio Alam Relaksasi";
+    };
+  }, []);
 
   // Comprehensive knowledge base items for searching web information
   const infoItems = useMemo(() => [

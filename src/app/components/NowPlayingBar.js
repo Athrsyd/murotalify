@@ -94,18 +94,14 @@ export default function NowPlayingBar() {
                 {currentTrack.type === 'ayat' && ` - Ayat ${currentTrack.ayatNumber}`}
               </div>
               <div className="now-playing-artist">
-                {audioLoading ? (
-                  <span className="now-playing-loading-badge">Memuat audio tilawah...</span>
-                ) : (
-                  QARI_MAP[currentTrack.qariKey]
-                )}
+                {QARI_MAP[currentTrack.qariKey]}
               </div>
             </div>
           </>
         ) : (
           <>
             <div className="now-playing-cover now-playing-cover-logo" style={{ background: 'rgba(16, 185, 129, 0.1)', padding: 6 }}>
-              <img src="/logo.png" alt="Murotalify" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 6 }} />
+              <img src="/logo.png" alt="Murotalify Player" width={48} height={48} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 6 }} />
             </div>
             <div className="now-playing-text">
               <div className="now-playing-title" style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
