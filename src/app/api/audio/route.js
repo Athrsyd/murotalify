@@ -39,7 +39,7 @@ export async function GET(request) {
     responseHeaders.set('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges');
     responseHeaders.set('Content-Type', upstreamResponse.headers.get('content-type') || 'audio/mpeg');
     responseHeaders.set('Accept-Ranges', 'bytes');
-    responseHeaders.set('Cache-Control', 'public, max-age=86400, s-maxage=604800, immutable');
+    responseHeaders.set('Cache-Control', 'public, max-age=31536000, s-maxage=31536000, immutable');
 
     if (upstreamResponse.headers.has('content-range')) {
       responseHeaders.set('Content-Range', upstreamResponse.headers.get('content-range'));

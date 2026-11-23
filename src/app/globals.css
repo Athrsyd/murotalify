@@ -1,39 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap');
+:root, [data-theme="dark"] {
+  /* Minimalist Modern Dark Theme */
+  --bg-app: #080c14;
+  --bg-sidebar: #0d1320;
+  --bg-main: #080c14;
+  --bg-player: #0f1728;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --bg-card-hover: rgba(255, 255, 255, 0.08);
+  --bg-elevated: #162035;
 
-:root {
-  /* Dark Glassmorphism Design Tokens */
-  --bg-app: #07090e;
-  --bg-sidebar: rgba(12, 16, 26, 0.65);
-  --bg-main: rgba(10, 14, 24, 0.45);
-  --bg-player: rgba(11, 15, 26, 0.88);
-  --bg-card: rgba(255, 255, 255, 0.035);
-  --bg-card-hover: rgba(255, 255, 255, 0.075);
-  --bg-elevated: rgba(20, 26, 42, 0.85);
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-subdued: #64748B;
 
-  --text-primary: #FFFFFF;
-  --text-secondary: #A1A1AA;
-  --text-subdued: #71717A;
-
-  --accent-green: #1DB954;
-  --accent-green-hover: #1ed760;
-  --accent-green-pressed: #169c46;
+  --accent-green: #10B981;
+  --accent-green-hover: #059669;
+  --accent-green-pressed: #047857;
   --accent-glow: none;
 
-  /* Glass Borders & Highlights */
+  /* Subtle Minimalist Borders */
+  --border-subtle: rgba(255, 255, 255, 0.08);
   --border-glass: 1px solid rgba(255, 255, 255, 0.08);
   --border-glass-hover: 1px solid rgba(255, 255, 255, 0.18);
-  --border-glass-bright: 1px solid rgba(255, 255, 255, 0.24);
-
-  /* Glass Blur Filters */
-  --glass-blur-sm: blur(12px) saturate(160%);
-  --glass-blur-md: blur(20px) saturate(180%);
-  --glass-blur-lg: blur(32px) saturate(200%);
-
-  /* Shadows & Inner Glows */
-  --glass-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --glass-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
-  --glass-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.35);
-  --glass-inner-light: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --border-glass-bright: 1px solid rgba(255, 255, 255, 0.25);
 
   --scrollbar-thumb: rgba(255, 255, 255, 0.18);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.35);
@@ -45,11 +33,42 @@
   --radius-2xl: 22px;
 
   --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 
-  --sidebar-width: 280px;
-  --player-height: 90px;
-  --topbar-height: 64px;
+  --sidebar-width: 260px;
+  --player-height: 84px;
+  --topbar-height: 60px;
+
+  --font-main: var(--font-inter, 'Inter', -apple-system, sans-serif);
+  --font-arabic: var(--font-amiri, 'Amiri', serif);
+}
+
+[data-theme="light"] {
+  /* Minimalist Clean Light Theme */
+  --bg-app: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-main: #f8fafc;
+  --bg-player: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-elevated: #ffffff;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-subdued: #94a3b8;
+
+  --accent-green: #059669;
+  --accent-green-hover: #047857;
+  --accent-green-pressed: #065f46;
+  --accent-glow: none;
+
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-glass: 1px solid rgba(0, 0, 0, 0.08);
+  --border-glass-hover: 1px solid rgba(0, 0, 0, 0.16);
+  --border-glass-bright: 1px solid rgba(0, 0, 0, 0.22);
+
+  --scrollbar-thumb: rgba(0, 0, 0, 0.16);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.32);
 }
 
 * {
@@ -61,19 +80,22 @@
 html, body {
   height: 100%;
   width: 100%;
-  overflow: hidden;
   background-color: var(--bg-app);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
-  /* Ambient Atmospheric Background Glows */
+[data-theme="dark"] body {
   background-image: 
-    radial-gradient(ellipse 70% 45% at 20% -5%, rgba(30, 64, 175, 0.22), transparent 70%),
-    radial-gradient(ellipse 55% 35% at 85% 15%, rgba(13, 148, 136, 0.18), transparent 65%),
-    radial-gradient(ellipse 65% 50% at 50% 105%, rgba(29, 185, 84, 0.14), transparent 70%),
-    radial-gradient(circle at 10% 75%, rgba(88, 28, 135, 0.16), transparent 50%);
+    radial-gradient(ellipse 60% 40% at 20% -5%, rgba(16, 185, 129, 0.08), transparent 70%),
+    radial-gradient(ellipse 50% 30% at 85% 15%, rgba(14, 165, 233, 0.06), transparent 65%);
+  background-attachment: fixed;
+}
+
+[data-theme="light"] body {
+  background-image: radial-gradient(ellipse 70% 35% at 50% -10%, rgba(5, 150, 105, 0.05), transparent 70%);
   background-attachment: fixed;
 }
 
@@ -443,8 +465,730 @@ html, body {
 }
 
 .topbar-qari-select option {
-  background: #111624;
-  color: #fff;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+/* Topbar Quota & Theme Buttons */
+.topbar-quota-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: var(--border-glass);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.topbar-quota-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+.topbar-quota-btn.active {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+.topbar-theme-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: var(--border-glass);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.topbar-theme-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+  border-color: var(--border-glass-bright);
+}
+
+/* ============================================= */
+/* QUOTA USAGE & DATA TRACKER PAGE               */
+/* ============================================= */
+.quota-page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 8px 0 60px;
+  animation: fadeIn 0.25s ease;
+}
+
+.quota-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.quota-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: var(--accent-green);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.quota-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+}
+
+.quota-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.quota-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 640px;
+}
+
+.quota-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quota-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: var(--border-glass);
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quota-reset-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.quota-confirm-box {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.quota-confirm-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quota-confirm-text strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.quota-confirm-text p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.quota-confirm-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quota-confirm-cancel {
+  padding: 6px 14px;
+  background: transparent;
+  border: var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quota-confirm-agree {
+  padding: 6px 16px;
+  background: #ef4444;
+  border: none;
+  border-radius: var(--radius-md);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Metrics Grid */
+.quota-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.quota-metric-card {
+  background: var(--bg-card);
+  border: var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.quota-metric-card:hover {
+  border-color: var(--border-glass-bright);
+}
+
+.quota-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.quota-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quota-card-icon.used-icon {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.quota-card-icon.saved-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--accent-green);
+}
+
+.quota-card-icon.ratio-icon {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.quota-card-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.quota-card-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+
+.quota-card-value.saved-text {
+  color: var(--accent-green);
+}
+
+.quota-card-value.ratio-text {
+  color: #f59e0b;
+}
+
+.quota-card-footer {
+  font-size: 12px;
+  color: var(--text-subdued);
+  line-height: 1.4;
+  margin-top: auto;
+}
+
+/* Details Row */
+.quota-details-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.quota-section-card {
+  background: var(--bg-card);
+  border: var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+}
+
+.quota-section-card.full-width {
+  width: 100%;
+}
+
+.quota-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.quota-section-desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.quota-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.quota-breakdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card-hover);
+  border: var(--border-glass);
+}
+
+.breakdown-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.breakdown-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.breakdown-sub {
+  font-size: 11.5px;
+  color: var(--text-subdued);
+}
+
+.breakdown-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.quota-cache-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cache-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--accent-green);
+  font-weight: 600;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+}
+
+.cache-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green);
+}
+
+.quota-clear-cache-btn {
+  padding: 10px 16px;
+  background: var(--bg-card-hover);
+  border: var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quota-clear-cache-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Activity Log Table */
+.quota-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.quota-log-count {
+  font-size: 12px;
+  color: var(--text-subdued);
+  background: var(--bg-card-hover);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: var(--border-glass);
+}
+
+.quota-empty-log {
+  text-align: center;
+  padding: 36px 20px;
+  color: var(--text-subdued);
+}
+
+.empty-log-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.quota-log-table-wrap {
+  overflow-x: auto;
+}
+
+.quota-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.quota-log-table th {
+  padding: 10px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-subdued);
+  letter-spacing: 0.05em;
+  border-bottom: var(--border-glass);
+}
+
+.quota-log-table td {
+  padding: 12px 14px;
+  border-bottom: var(--border-glass);
+  color: var(--text-primary);
+}
+
+.log-time {
+  color: var(--text-subdued);
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.log-name {
+  font-weight: 500;
+}
+
+.log-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.log-badge.saved {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--accent-green);
+}
+
+.log-badge.used {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.log-size {
+  font-weight: 600;
+  font-family: monospace;
+}
+
+/* ============================================= */
+/* DATA SAVER MODE & OFFLINE CACHE ENHANCEMENTS */
+/* ============================================= */
+.quota-datasaver-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+  transition: all var(--transition-normal);
+}
+
+.quota-datasaver-card.active {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), var(--bg-card));
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+}
+
+.datasaver-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+}
+
+.datasaver-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.datasaver-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.datasaver-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.datasaver-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.datasaver-status-badge.active {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--accent-green);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.datasaver-status-badge.inactive {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-subdued);
+}
+
+.datasaver-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 600px;
+}
+
+.datasaver-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card-hover);
+  border: var(--border-glass);
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.datasaver-toggle-btn.btn-active {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: var(--accent-green);
+}
+
+.toggle-pill {
+  width: 38px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.25s ease;
+}
+
+.datasaver-toggle-btn.btn-active .toggle-pill {
+  background: var(--accent-green);
+}
+
+.toggle-dot {
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.datasaver-toggle-btn.btn-active .toggle-dot {
+  transform: translateX(16px);
+}
+
+.quota-cache-stats-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cache-stat-item {
+  background: var(--bg-card-hover);
+  border: var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cache-stat-label {
+  font-size: 11px;
+  color: var(--text-subdued);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.cache-stat-val {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.quota-tips-card {
+  margin-top: 24px;
+}
+
+.quota-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.quota-tip-item {
+  background: var(--bg-card-hover);
+  border: var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.tip-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-green);
+  margin-bottom: 8px;
+}
+
+.quota-tip-item p {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Surah Detail Offline & Data Saver Elements */
+.surah-datasaver-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-bottom: 16px;
+}
+
+.datasaver-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--accent-green);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.datasaver-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.surah-offline-btn.is-cached {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: var(--accent-green) !important;
+}
+
+.spinner-mini {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--accent-green);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
 }
 
 /* ============================================= */
@@ -1167,11 +1911,8 @@ html, body {
 .recent-card {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: var(--glass-blur-sm);
-  -webkit-backdrop-filter: var(--glass-blur-sm);
+  background: var(--bg-card);
   border: var(--border-glass);
-  box-shadow: var(--glass-inner-light);
   border-radius: var(--radius-md);
   overflow: hidden;
   cursor: pointer;
@@ -1180,10 +1921,10 @@ html, body {
 }
 
 .recent-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.18);
+  background: var(--bg-card-hover);
+  border-color: var(--border-glass-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), var(--glass-inner-light);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .recent-card-cover {
@@ -1286,11 +2027,8 @@ html, body {
 }
 
 .surah-card {
-  background: rgba(255, 255, 255, 0.035);
-  backdrop-filter: var(--glass-blur-sm);
-  -webkit-backdrop-filter: var(--glass-blur-sm);
+  background: var(--bg-card);
   border: var(--border-glass);
-  box-shadow: var(--glass-inner-light);
   border-radius: var(--radius-lg);
   padding: 16px;
   cursor: pointer;
@@ -1301,10 +2039,10 @@ html, body {
 }
 
 .surah-card:hover {
-  background: rgba(255, 255, 255, 0.075);
-  border-color: rgba(255, 255, 255, 0.18);
-  transform: translateY(-5px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), var(--glass-inner-light);
+  background: var(--bg-card-hover);
+  border-color: var(--border-glass-hover);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .surah-card-cover {
@@ -1839,11 +2577,10 @@ html, body {
   right: 0;
   bottom: var(--player-height);
   width: 380px;
-  background: rgba(12, 16, 28, 0.86);
-  backdrop-filter: var(--glass-blur-lg);
-  -webkit-backdrop-filter: var(--glass-blur-lg);
-  border-left: var(--border-glass-bright);
-  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.65), var(--glass-inner-light);
+  max-width: 100vw;
+  background: var(--bg-elevated);
+  border-left: var(--border-glass);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   z-index: 150;
@@ -2033,11 +2770,9 @@ html, body {
   bottom: var(--player-height);
   width: 400px;
   max-width: 100vw;
-  background: rgba(12, 16, 28, 0.92);
-  backdrop-filter: var(--glass-blur-lg);
-  -webkit-backdrop-filter: var(--glass-blur-lg);
-  border-left: var(--border-glass-bright);
-  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.72), var(--glass-inner-light);
+  background: var(--bg-elevated);
+  border-left: var(--border-glass);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   z-index: 151;
@@ -2460,8 +3195,8 @@ html, body {
 .ayat-item {
   padding: 18px 20px;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
+  border: var(--border-glass);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -2469,14 +3204,14 @@ html, body {
 }
 
 .ayat-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: var(--bg-card-hover);
+  border-color: var(--border-glass-hover);
 }
 
 .ayat-item.playing {
-  background: rgba(29, 185, 84, 0.08);
-  border-color: rgba(29, 185, 84, 0.35);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(16, 185, 129, 0.09);
+  border-color: var(--accent-green);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
 }
 
 .ayat-item-top {
@@ -5890,8 +6625,7 @@ html, body {
 /* ============================================= */
 @media (max-width: 768px) {
   html, body {
-    overflow: hidden;
-    position: fixed;
+    overflow-x: hidden;
     height: 100%;
     width: 100%;
   }
@@ -5899,7 +6633,7 @@ html, body {
   .app-layout {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100dvh;
     width: 100vw;
     overflow: hidden;
     position: relative;
@@ -5927,8 +6661,8 @@ html, body {
   /* 3. Compact Top Bar */
   .topbar {
     height: 56px;
-    padding: 0 14px;
-    gap: 10px;
+    padding: 0 12px;
+    gap: 8px;
   }
 
   .topbar-nav-btn {
@@ -5937,14 +6671,28 @@ html, body {
   }
 
   .topbar-right {
-    gap: 8px;
+    gap: 6px;
+  }
+
+  .topbar-quota-btn {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+
+  .topbar-theme-btn {
+    width: 32px !important;
+    height: 32px !important;
   }
 
   .topbar-info-btn {
-    padding: 6px 10px;
-    font-size: 11.5px;
-    gap: 6px;
+    padding: 5px 8px;
+    font-size: 11px;
+    gap: 4px;
     border-radius: 999px;
+  }
+
+  .topbar-info-text {
+    display: none;
   }
 
   .topbar-info-logo {
@@ -5953,9 +6701,9 @@ html, body {
   }
 
   .topbar-qari-select {
-    padding: 6px 10px;
-    font-size: 11.5px;
-    max-width: 135px;
+    padding: 5px 8px;
+    font-size: 11px;
+    max-width: 110px;
     border-radius: 999px;
   }
 
@@ -5967,15 +6715,15 @@ html, body {
     left: 0;
     right: 0;
     height: 58px;
-    background: rgba(18, 18, 18, 0.98);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-player) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: var(--border-glass) !important;
     z-index: 999;
     justify-content: space-around;
     align-items: center;
     padding: 4px 6px max(env(safe-area-inset-bottom, 0px), 4px);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
   }
 
   .mobile-nav-item {
@@ -5986,18 +6734,18 @@ html, body {
     gap: 3px;
     background: transparent;
     border: none;
-    color: #a1a1aa;
-    font-size: 10.5px;
+    color: var(--text-subdued) !important;
+    font-size: 10px;
     font-weight: 600;
     cursor: pointer;
-    padding: 4px 12px;
+    padding: 4px 8px;
     border-radius: 8px;
     transition: color 0.15s ease, transform 0.15s ease;
   }
 
   .mobile-nav-item svg {
-    width: 21px;
-    height: 21px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
   }
 
@@ -6006,7 +6754,7 @@ html, body {
   }
 
   .mobile-nav-item.active {
-    color: var(--accent-green);
+    color: var(--accent-green) !important;
   }
 
   .mobile-nav-item.active svg {
@@ -6014,6 +6762,10 @@ html, body {
   }
 
   /* 5. Spotify Floating Mini-Player Dock */
+  .now-playing-bar.is-empty {
+    display: none !important;
+  }
+
   .now-playing-bar {
     position: fixed !important;
     bottom: calc(58px + max(env(safe-area-inset-bottom, 0px), 0px) + 6px) !important;
@@ -6023,12 +6775,12 @@ html, body {
     height: 56px !important;
     grid-row: auto !important;
     grid-column: auto !important;
-    background: rgba(24, 30, 44, 0.96) !important;
-    backdrop-filter: blur(24px) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    background: var(--bg-elevated) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: var(--border-glass) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35) !important;
     padding: 0 12px !important;
     z-index: 990 !important;
     overflow: hidden;
@@ -6078,14 +6830,14 @@ html, body {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #ffffff;
-    color: #000000;
+    background: var(--accent-green) !important;
+    color: #ffffff !important;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
     transition: transform 0.15s ease;
   }
 
@@ -6101,7 +6853,7 @@ html, body {
     right: 0;
     height: 3px;
     background: rgba(255, 255, 255, 0.14);
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 12px 12px;
     overflow: hidden;
     cursor: pointer;
   }
@@ -6110,6 +6862,61 @@ html, body {
     height: 100%;
     background: var(--accent-green);
     transition: width 0.15s linear;
+  }
+
+  /* Quota Page Mobile */
+  .quota-metrics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .quota-details-row {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .quota-title {
+    font-size: 22px !important;
+  }
+
+  .quota-header-actions {
+    width: 100%;
+  }
+
+  .quota-reset-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .quota-datasaver-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+    padding: 16px !important;
+  }
+
+  .datasaver-toggle-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .quota-tips-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .surah-detail-actions {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .surah-offline-btn,
+  .surah-add-playlist-btn {
+    flex: 1 !important;
+    min-width: 140px !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    padding: 8px 12px !important;
   }
 
   /* 6. Mobile Surah Grid & Cards */
@@ -6408,3 +7215,838 @@ html, body {
   }
 }
 
+
+/* ==========================================================================
+   2026 ENHANCEMENTS: LIGHT THEME, RICH LOADING SKELETONS, & RESPONSIVE FIXES
+   ========================================================================== */
+
+/* 1. HIDE NEXTJS DEV OVERLAY ON MOBILE VIEW */
+nextjs-portal,
+#nextjs-dev-overlay,
+[data-nextjs-toast],
+[data-nextjs-dialog-overlay] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* 2. MODAL OVERLAY & CARD Z-INDEX FIX */
+.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2000 !important;
+  background: rgba(4, 6, 14, 0.82) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+}
+
+.modal-card,
+.playlist-create-modal,
+.add-playlist-modal-card {
+  max-height: calc(100vh - 40px) !important;
+  overflow-y: auto !important;
+  width: 100% !important;
+  max-width: 490px !important;
+  margin: auto !important;
+  z-index: 2001 !important;
+}
+
+/* 3. AYAT LIST TABLE HEADER FIX (Replaces squished #AyatDurasi) */
+.ayat-list-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 18px !important;
+  margin-bottom: 12px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  color: var(--text-subdued) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+.ayat-col-num {
+  width: 36px;
+}
+.ayat-col-title {
+  flex: 1;
+  text-align: left;
+}
+.ayat-col-action {
+  width: 48px;
+  text-align: right;
+}
+
+/* 4. RICH LOADING STATES & SKELETON SHIMMER */
+.page-loading-wrapper {
+  padding: 20px 0 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.page-loading-card {
+  background: var(--bg-card);
+  border: var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.page-loading-icon-wrap {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.page-loading-icon {
+  font-size: 30px;
+  z-index: 2;
+}
+
+.page-loading-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(16, 185, 129, 0.35);
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 0.3; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+.page-loading-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.page-loading-desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  max-width: 460px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.page-loading-progress-bar {
+  width: 100%;
+  max-width: 320px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border-subtle);
+  overflow: hidden;
+  position: relative;
+}
+
+.page-loading-progress-indeterminate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  animation: progress-slide 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes progress-slide {
+  0% { transform: translateX(-10%); width: 30%; }
+  100% { transform: translateX(250%); width: 45%; }
+}
+
+/* Skeleton Surah Grid */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.skeleton-surah-card {
+  background: var(--bg-card);
+  border: var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  background: var(--border-subtle);
+}
+
+.skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--border-subtle);
+}
+
+/* Shimmer Animation */
+.shimmer {
+  background: linear-gradient(90deg, var(--border-subtle) 0%, rgba(255, 255, 255, 0.12) 50%, var(--border-subtle) 100%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer-anim 1.8s infinite !important;
+}
+
+[data-theme="light"] .shimmer {
+  background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%) !important;
+  background-size: 200% 100% !important;
+}
+
+@keyframes shimmer-anim {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Surah Detail Loading */
+.surah-detail-loading-wrapper {
+  padding: 16px 0 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.surah-loading-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.surah-loading-spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid rgba(16, 185, 129, 0.2);
+  border-top-color: #10b981;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.surah-loading-info h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-green);
+  margin-bottom: 2px;
+}
+
+.surah-loading-info p {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.skeleton-surah-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+  background: var(--bg-card);
+  border: var(--border-glass);
+  border-radius: var(--radius-xl);
+}
+
+.skeleton-surah-cover {
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+.skeleton-surah-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-ayat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-ayat-card {
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Audio Loading Spinner & Badge */
+.player-spin-icon {
+  animation: spin 0.8s linear infinite;
+}
+
+.now-playing-loading-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  color: #10b981;
+  font-weight: 600;
+  animation: pulse 1.5s infinite;
+}
+
+/* Search Loading State */
+.search-loading-state {
+  text-align: center;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   5. COMPREHENSIVE LIGHT THEME OVERRIDES
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-app: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-main: #f8fafc;
+  --bg-player: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-elevated: #ffffff;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-subdued: #94a3b8;
+
+  --accent-green: #059669;
+  --accent-green-hover: #047857;
+  --accent-green-pressed: #065f46;
+
+  --border-subtle: #e2e8f0;
+  --border-glass: 1px solid #e2e8f0;
+  --border-glass-hover: 1px solid #cbd5e1;
+  --border-glass-bright: 1px solid #94a3b8;
+
+  --scrollbar-thumb: rgba(0, 0, 0, 0.16);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.32);
+}
+
+[data-theme="light"] body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Typography & Titles in Light Mode */
+[data-theme="light"] .section-title,
+[data-theme="light"] .collections-title,
+[data-theme="light"] .library-main-title,
+[data-theme="light"] .surah-detail-title,
+[data-theme="light"] .playlist-title,
+[data-theme="light"] .modal-title,
+[data-theme="light"] .quota-title,
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .collections-subtitle,
+[data-theme="light"] .library-subtitle,
+[data-theme="light"] .quota-subtitle,
+[data-theme="light"] .modal-subtitle {
+  color: #64748b !important;
+}
+
+/* Topbar in Light Mode */
+[data-theme="light"] .topbar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .topbar-nav-btn,
+[data-theme="light"] .topbar-theme-btn,
+[data-theme="light"] .topbar-quota-btn,
+[data-theme="light"] .topbar-info-btn,
+[data-theme="light"] .topbar-qari-select {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .topbar-qari-select option {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Home Brand Banner in Light Mode */
+[data-theme="light"] .home-brand-banner {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #f8fafc 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.28) !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08) !important;
+}
+
+[data-theme="light"] .home-brand-title {
+  color: #064e3b !important;
+}
+
+[data-theme="light"] .home-brand-subtitle {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .home-brand-tag {
+  color: #059669 !important;
+}
+
+[data-theme="light"] .home-brand-btn-secondary {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .home-brand-btn-secondary:hover {
+  background: #f1f5f9 !important;
+}
+
+/* Cards in Light Mode */
+[data-theme="light"] .surah-card,
+[data-theme="light"] .recent-card,
+[data-theme="light"] .playlist-card,
+[data-theme="light"] .create-playlist-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .surah-card:hover,
+[data-theme="light"] .recent-card:hover,
+[data-theme="light"] .playlist-card:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .surah-card-title,
+[data-theme="light"] .recent-card-title,
+[data-theme="light"] .playlist-card-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .surah-card-subtitle,
+[data-theme="light"] .recent-card-subtitle,
+[data-theme="light"] .playlist-card-desc {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .surah-card-arabic {
+  color: #059669 !important;
+}
+
+/* Quran Verse / Ayat in Light Mode (Crisp Black Arabic Text) */
+[data-theme="light"] .ayat-item {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .ayat-item:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .ayat-item.playing {
+  background: #ecfdf5 !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15) !important;
+}
+
+[data-theme="light"] .ayat-number-badge {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .ayat-arabic {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .ayat-transliteration {
+  color: #059669 !important;
+}
+
+[data-theme="light"] .ayat-translation {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .ayat-play-btn {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .ayat-play-btn:hover {
+  color: #059669 !important;
+}
+
+/* Action Buttons in Light Mode (Simpan Offline & Tambah Playlist) */
+[data-theme="light"] .action-pill-btn {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .action-pill-btn:hover:not(:disabled) {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+[data-theme="light"] .action-pill-btn.is-cached {
+  background: #ecfdf5 !important;
+  border-color: #059669 !important;
+  color: #047857 !important;
+}
+
+/* Data Saver Bar in Surah Detail */
+[data-theme="light"] .surah-datasaver-bar {
+  background: #ecfdf5 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+[data-theme="light"] .surah-datasaver-bar .datasaver-text {
+  color: #065f46 !important;
+}
+
+/* Modals in Light Mode */
+[data-theme="light"] .modal-overlay {
+  background: rgba(15, 23, 42, 0.6) !important;
+}
+
+[data-theme="light"] .modal-card,
+[data-theme="light"] .playlist-create-modal,
+[data-theme="light"] .add-playlist-modal-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .glass-input.modal-input,
+[data-theme="light"] .glass-input.modal-textarea {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .glass-input.modal-input:focus,
+[data-theme="light"] .glass-input.modal-textarea:focus {
+  background: #ffffff !important;
+  border-color: #059669 !important;
+}
+
+[data-theme="light"] .form-label {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .icon-choice-btn {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .icon-choice-btn:hover {
+  background: #e2e8f0 !important;
+}
+
+[data-theme="light"] .icon-choice-btn.active {
+  background: #ecfdf5 !important;
+  border-color: #059669 !important;
+  color: #047857 !important;
+}
+
+[data-theme="light"] .modal-btn-cancel {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] .modal-btn-cancel:hover {
+  background: #e2e8f0 !important;
+}
+
+[data-theme="light"] .modal-close-btn {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+[data-theme="light"] .modal-close-btn:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Player Bar in Light Mode */
+[data-theme="light"] .now-playing-bar {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-top: 1px solid #e2e8f0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .now-playing-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .now-playing-artist {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .player-btn {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .player-btn:hover,
+[data-theme="light"] .player-btn.active {
+  color: #059669 !important;
+}
+
+[data-theme="light"] .player-btn-play,
+[data-theme="light"] .mobile-play-btn {
+  background: #059669 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .progress-bar-bg {
+  background: #e2e8f0 !important;
+}
+
+[data-theme="light"] .progress-time {
+  color: #64748b !important;
+}
+
+/* Mobile Nav in Light Mode */
+[data-theme="light"] .mobile-nav {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-top: 1px solid #e2e8f0 !important;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .mobile-nav-item {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .mobile-nav-item.active {
+  color: #059669 !important;
+}
+
+/* Search Page in Light Mode */
+[data-theme="light"] .search-input {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .search-chip {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] .search-chip:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Quota Page in Light Mode */
+[data-theme="light"] .quota-metric-card,
+[data-theme="light"] .quota-section-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .quota-card-label {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .quota-card-value {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .quota-section-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .quota-tip-item {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .quota-tip-item p {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .quota-datasaver-card {
+  background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+}
+
+[data-theme="light"] .quota-datasaver-title {
+  color: #064e3b !important;
+}
+
+[data-theme="light"] .quota-datasaver-desc {
+  color: #334155 !important;
+}
+
+/* Drawers & Popups in Light Mode */
+[data-theme="light"] .ambient-panel,
+[data-theme="light"] .murotal-effect-panel,
+[data-theme="light"] .context-menu {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .ambient-sound-card {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .ambient-sound-card.active {
+  background: #ecfdf5 !important;
+  border-color: #059669 !important;
+}
+
+[data-theme="light"] .context-menu-item {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .context-menu-item:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* ==========================================================================
+   6. RESPONSIVE REFINEMENTS (MOBILE & TABLET)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .topbar {
+    padding: 0 12px !important;
+    height: 54px !important;
+  }
+
+  .topbar-right {
+    gap: 8px !important;
+  }
+
+  .topbar-quota-label {
+    display: none !important;
+  }
+
+  .topbar-info-btn {
+    display: none !important;
+  }
+
+  .topbar-qari-select {
+    max-width: 125px !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .surah-detail-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 16px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .surah-detail-cover {
+    width: 130px !important;
+    height: 130px !important;
+  }
+
+  .surah-detail-cover .surah-card-number {
+    font-size: 52px !important;
+  }
+
+  .surah-detail-cover .surah-card-arabic {
+    font-size: 26px !important;
+  }
+
+  .surah-detail-title {
+    font-size: 32px !important;
+  }
+
+  .surah-detail-actions {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .main-content {
+    padding-bottom: 140px !important;
+  }
+
+  .modal-card,
+  .playlist-create-modal,
+  .add-playlist-modal-card {
+    padding: 20px 16px !important;
+    border-radius: 20px !important;
+    max-height: calc(100vh - 24px) !important;
+  }
+
+  .icon-selector-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+  }
+}
+
+/* Light mode secondary button (e.g. Batal in modals) */
+[data-theme="light"] .btn-secondary {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .btn-secondary:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .modal-actions {
+  border-top: 1px solid #e2e8f0 !important;
+}

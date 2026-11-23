@@ -120,8 +120,33 @@ export default function HomePage() {
 
   if (loading && surahList.length === 0) {
     return (
-      <div className="loading-spinner">
-        <div className="spinner" />
+      <div className="page-loading-wrapper">
+        <div className="page-loading-card">
+          <div className="page-loading-icon-wrap">
+            <span className="page-loading-icon">📖</span>
+            <div className="page-loading-pulse" />
+          </div>
+          <h2 className="page-loading-title">Sedang Mengambil Data Al-Qur&apos;an...</h2>
+          <p className="page-loading-desc">
+            Menghubungkan ke API resmi Al-Qur&apos;an Kemenag (114 Surah, transliterasi Latin, dan link audio qari).
+          </p>
+          <div className="page-loading-progress-bar">
+            <div className="page-loading-progress-indeterminate" />
+          </div>
+        </div>
+
+        {/* Shimmering Surah Skeleton Grid */}
+        <div className="skeleton-grid">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="skeleton-surah-card shimmer">
+              <div className="skeleton-cover" />
+              <div className="skeleton-lines">
+                <div className="skeleton-line" style={{ width: '65%' }} />
+                <div className="skeleton-line" style={{ width: '45%' }} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -150,7 +175,7 @@ export default function HomePage() {
               <span className="home-brand-tag-dot" />
               <span>Murotalify Platform Resmi</span>
             </div>
-            <h1 className="home-brand-title">
+            <h1 className="home-brand-title" suppressHydrationWarning>
               {getGreeting()}
             </h1>
             <p className="home-brand-subtitle">

@@ -2,14 +2,15 @@
 
 import { createContext, useContext, useReducer, useEffect, useCallback, useRef } from 'react';
 import * as Tone from 'tone';
+import { recordQuotaUsage, recordQuotaSaved, isDataSaverEnabled, setDataSaverEnabled } from '../lib/quotaTracker';
 
 const QARI_MAP = {
-  '01': 'Abdullah Al-Juhany',
-  '02': 'Abdul Muhsin Al-Qasim',
-  '03': 'Abdurrahman As-Sudais',
-  '04': 'Ibrahim Al-Dossari',
-  '05': 'Misyari Rasyid Al-Afasy',
-  '06': 'Yasser Al-Dosari',
+  '06': 'Yasser Al-Dosari (⚡ Paling Hemat)',
+  '05': 'Misyari Rasyid (⚡ Sangat Hemat)',
+  '01': 'Abdullah Al-Juhany (Standar)',
+  '02': 'Abdul Muhsin Al-Qasim (Standar)',
+  '03': 'Abdurrahman As-Sudais (Standar)',
+  '04': 'Ibrahim Al-Dossari (Standar)',
 };
 
 const GRADIENTS = [
@@ -106,6 +107,7 @@ const initialState = {
   
   // Player
   isPlaying: false,
+  audioLoading: false,
   currentTrack: null, // { surahNumber, surahName, surahNameArab, qariKey, audioUrl, type: 'full' | 'ayat', ayatNumber }
   currentTime: 0,
   duration: 0,
@@ -140,6 +142,10 @@ const initialState = {
   // Search
   searchQuery: '',
   
+  // Theme & Data Saver
+  theme: 'dark', // 'dark' | 'light'
+  dataSaver: true, // Default ON for max savings!
+
   // UI
   showCreatePlaylist: false,
   addToPlaylistSurah: null, // Holds { nomor, nama, namaLatin, jumlahAyat, arti, audioFull }
@@ -199,7 +205,9 @@ function reducer(state, action) {
     }
     
     case 'SET_PLAYING':
-      return { ...state, isPlaying: action.payload };
+      return { ...state, isPlaying: action.payload, audioLoading: action.payload ? state.audioLoading : false };
+    case 'SET_AUDIO_LOADING':
+      return { ...state, audioLoading: action.payload };
     case 'SET_CURRENT_TRACK': {
       if (typeof window !== 'undefined' && action.payload) {
         try {
@@ -408,6 +416,27 @@ function reducer(state, action) {
       return { ...state, contextMenu: action.payload };
     case 'SET_TOAST':
       return { ...state, toast: action.payload };
+
+    case 'SET_THEME': {
+      if (typeof window !== 'undefined') {
+        try { localStorage.setItem('murotal_theme', action.payload); } catch (e) {}
+        document.documentElement.setAttribute('data-theme', action.payload);
+      }
+      return { ...state, theme: action.payload };
+    }
+    case 'TOGGLE_THEME': {
+      const nextTheme = state.theme === 'dark' ? 'light' : 'dark';
+      if (typeof window !== 'undefined') {
+        try { localStorage.setItem('murotal_theme', nextTheme); } catch (e) {}
+        document.documentElement.setAttribute('data-theme', nextTheme);
+      }
+      return { ...state, theme: nextTheme };
+    }
+
+    case 'SET_DATA_SAVER': {
+      setDataSaverEnabled(action.payload);
+      return { ...state, dataSaver: action.payload };
+    }
     
     default:
       return state;
@@ -567,6 +596,7 @@ export function AppProvider({ children }) {
 
     // Immediately dispatch so UI updates instantly (active track title, playing state, etc.)
     dispatch({ type: 'SET_CURRENT_TRACK', payload: track });
+    dispatch({ type: 'SET_AUDIO_LOADING', payload: true });
 
     if (typeof window !== 'undefined') {
       try {
@@ -590,6 +620,7 @@ export function AppProvider({ children }) {
     try {
       await ensureAudioContext();
       audio.crossOrigin = 'anonymous';
+      audio.preload = stateRef.current?.dataSaver ? 'none' : 'metadata';
       const targetSrc = getProxiedAudioUrl(track.audioUrl);
       if (audio.src !== targetSrc && !audio.src.endsWith(targetSrc)) {
         audio.src = targetSrc;
@@ -802,6 +833,31 @@ export function AppProvider({ children }) {
           dispatch({ type: 'SET_QUEUE', payload: parsedQueue });
         }
       }
+
+      // 7. Restore Theme & Data Saver & Service Worker Setup
+      const savedTheme = localStorage.getItem('murotal_theme') || 'dark';
+      dispatch({ type: 'SET_THEME', payload: savedTheme });
+      document.documentElement.setAttribute('data-theme', savedTheme);
+
+      const savedDataSaver = isDataSaverEnabled();
+      dispatch({ type: 'SET_DATA_SAVER', payload: savedDataSaver });
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch((err) => {
+          console.warn('SW registration failed:', err);
+        });
+
+        const handleSwMessage = (event) => {
+          if (!event.data) return;
+          if (event.data.type === 'QUOTA_USED') {
+            recordQuotaUsage(event.data);
+          } else if (event.data.type === 'QUOTA_SAVED') {
+            recordQuotaSaved(event.data);
+          }
+        };
+
+        navigator.serviceWorker.addEventListener('message', handleSwMessage);
+      }
     } catch (e) {
       console.error('Error loading from localStorage:', e);
     }
@@ -891,11 +947,23 @@ export function AppProvider({ children }) {
     };
     const onPause = () => {
       dispatch({ type: 'SET_PLAYING', payload: false });
+      dispatch({ type: 'SET_AUDIO_LOADING', payload: false });
       try {
         localStorage.setItem('murotal_last_time', audio.currentTime.toString());
       } catch (e) {}
     };
     const onPlay = () => dispatch({ type: 'SET_PLAYING', payload: true });
+    const onWaiting = () => dispatch({ type: 'SET_AUDIO_LOADING', payload: true });
+    const onLoadStart = () => dispatch({ type: 'SET_AUDIO_LOADING', payload: true });
+    const onCanPlay = () => dispatch({ type: 'SET_AUDIO_LOADING', payload: false });
+    const onPlaying = () => {
+      dispatch({ type: 'SET_PLAYING', payload: true });
+      dispatch({ type: 'SET_AUDIO_LOADING', payload: false });
+    };
+    const onError = () => {
+      dispatch({ type: 'SET_PLAYING', payload: false });
+      dispatch({ type: 'SET_AUDIO_LOADING', payload: false });
+    };
 
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('durationchange', onDurationChange);
@@ -903,6 +971,11 @@ export function AppProvider({ children }) {
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('pause', onPause);
     audio.addEventListener('play', onPlay);
+    audio.addEventListener('waiting', onWaiting);
+    audio.addEventListener('loadstart', onLoadStart);
+    audio.addEventListener('canplay', onCanPlay);
+    audio.addEventListener('playing', onPlaying);
+    audio.addEventListener('error', onError);
 
     const onBeforeUnload = () => {
       if (audio && audio.currentTime > 0) {
@@ -920,6 +993,11 @@ export function AppProvider({ children }) {
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('play', onPlay);
+      audio.removeEventListener('waiting', onWaiting);
+      audio.removeEventListener('loadstart', onLoadStart);
+      audio.removeEventListener('canplay', onCanPlay);
+      audio.removeEventListener('playing', onPlaying);
+      audio.removeEventListener('error', onError);
       window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, [state.repeatMode, state.queue, state.currentTrack, playNext]);
@@ -948,6 +1026,7 @@ export function AppProvider({ children }) {
       if (config.active && state.isPlaying) {
         if (!audioEl) {
           audioEl = new Audio(sound.url);
+          audioEl.preload = 'none';
           audioEl.loop = true;
           ambientRefs.current[sound.id] = audioEl;
         }
@@ -963,6 +1042,16 @@ export function AppProvider({ children }) {
     });
   }, [state.ambientSounds, state.isPlaying]);
 
+  const toggleTheme = useCallback(() => {
+    dispatch({ type: 'TOGGLE_THEME' });
+  }, []);
+
+  const toggleDataSaver = useCallback(() => {
+    const nextVal = !state.dataSaver;
+    dispatch({ type: 'SET_DATA_SAVER', payload: nextVal });
+    showToast(nextVal ? '⚡ Mode Hemat Kuota: Aktif (Hemat hingga 90%)' : 'Mode Hemat Kuota: Nonaktif');
+  }, [state.dataSaver, showToast]);
+
   const value = {
     state,
     dispatch,
@@ -973,6 +1062,8 @@ export function AppProvider({ children }) {
     playPrev,
     showToast,
     toggleEpicAmbience,
+    toggleTheme,
+    toggleDataSaver,
     ensureAudioContext,
     QARI_MAP,
     GRADIENTS,

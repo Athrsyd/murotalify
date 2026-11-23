@@ -149,7 +149,14 @@ export default function SearchPage() {
       </div>
 
       {/* Results */}
-      {searchQuery.trim() && filteredSurahs.length === 0 ? (
+      {surahList.length === 0 ? (
+        <div className="search-loading-state">
+          <div className="surah-loading-spinner" />
+          <p style={{ marginTop: 14, color: 'var(--text-secondary)', fontSize: 14 }}>
+            Sedang mengambil daftar 114 surah untuk pencarian...
+          </p>
+        </div>
+      ) : searchQuery.trim() && filteredSurahs.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">🔍</div>
           <div className="empty-state-title">Tidak ditemukan</div>

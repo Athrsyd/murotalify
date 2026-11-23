@@ -1,5 +1,19 @@
 import './globals.css';
+import { Inter, Amiri } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const amiri = Amiri({
+  subsets: ['arabic'],
+  weight: ['400', '700'],
+  display: 'swap',
+  variable: '--font-amiri',
+});
 
 export const metadata = {
   title: 'Murotalify - Quran Recitation with Nature Sounds',
@@ -14,20 +28,14 @@ export const metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id">
+    <html lang="id" className={`${inter.variable} ${amiri.variable}`}>
       <head>
         <meta name="google-site-verification" content="PhMd0i_1rZJmUBXjvN1YQ9ARLr_bJDwgmr0oUY7z7bA" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body>
         {children}

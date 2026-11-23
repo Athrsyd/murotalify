@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '../context/AppContext';
 
 const PLAYLIST_ICONS = [
@@ -32,6 +32,12 @@ export default function CreatePlaylistModal() {
   const [selectedIcon, setSelectedIcon] = useState('📖');
   const [selectedGradient, setSelectedGradient] = useState('gradient-emerald');
 
+  const handleClose = useCallback(() => {
+    dispatch({ type: 'SHOW_CREATE_PLAYLIST', payload: false });
+    setName('');
+    setDescription('');
+  }, [dispatch]);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && state.showCreatePlaylist) {
@@ -40,7 +46,7 @@ export default function CreatePlaylistModal() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [state.showCreatePlaylist]);
+  }, [state.showCreatePlaylist, handleClose]);
 
   if (!state.showCreatePlaylist) return null;
 
@@ -61,12 +67,6 @@ export default function CreatePlaylistModal() {
     setDescription('');
     setSelectedIcon('📖');
     setSelectedGradient('gradient-emerald');
-  };
-
-  const handleClose = () => {
-    dispatch({ type: 'SHOW_CREATE_PLAYLIST', payload: false });
-    setName('');
-    setDescription('');
   };
 
   return (

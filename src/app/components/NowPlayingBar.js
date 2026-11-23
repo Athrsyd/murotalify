@@ -53,7 +53,7 @@ function MosqueIcon({ active }) {
 
 export default function NowPlayingBar() {
   const { state, dispatch, togglePlay, seek, playNext, playPrev, getGradient, QARI_MAP, toggleEpicAmbience } = useApp();
-  const { currentTrack, isPlaying, currentTime, duration, volume, isShuffle, repeatMode, epicAmbience, murotalEffectOpen } = state;
+  const { currentTrack, isPlaying, audioLoading, currentTime, duration, volume, isShuffle, repeatMode, epicAmbience, murotalEffectOpen } = state;
 
   const formatTime = (seconds) => {
     if (!seconds || isNaN(seconds)) return '0:00';
@@ -77,7 +77,7 @@ export default function NowPlayingBar() {
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="now-playing-bar">
+    <div className={`now-playing-bar ${!currentTrack ? 'is-empty' : ''}`}>
       {/* Left - Track Info */}
       <div className="now-playing-info">
         {currentTrack ? (
@@ -94,7 +94,11 @@ export default function NowPlayingBar() {
                 {currentTrack.type === 'ayat' && ` - Ayat ${currentTrack.ayatNumber}`}
               </div>
               <div className="now-playing-artist">
-                {QARI_MAP[currentTrack.qariKey]}
+                {audioLoading ? (
+                  <span className="now-playing-loading-badge">Memuat audio tilawah...</span>
+                ) : (
+                  QARI_MAP[currentTrack.qariKey]
+                )}
               </div>
             </div>
           </>
@@ -139,9 +143,13 @@ export default function NowPlayingBar() {
         <button
           className="mobile-play-btn"
           onClick={togglePlay}
-          aria-label={isPlaying ? 'Jeda' : 'Putar'}
+          aria-label={audioLoading ? 'Memuat audio' : isPlaying ? 'Jeda' : 'Putar'}
         >
-          {isPlaying ? (
+          {audioLoading ? (
+            <svg className="player-spin-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12" />
+            </svg>
+          ) : isPlaying ? (
             <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
               <path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"/>
             </svg>
@@ -173,8 +181,12 @@ export default function NowPlayingBar() {
             </svg>
           </button>
 
-          <button className="player-btn player-btn-play" onClick={togglePlay} title={isPlaying ? 'Jeda' : 'Putar'}>
-            {isPlaying ? (
+          <button className="player-btn player-btn-play" onClick={togglePlay} title={audioLoading ? 'Memuat audio...' : isPlaying ? 'Jeda' : 'Putar'}>
+            {audioLoading ? (
+              <svg className="player-spin-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12" />
+              </svg>
+            ) : isPlaying ? (
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"/>
               </svg>

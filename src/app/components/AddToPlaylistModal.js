@@ -1,11 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function AddToPlaylistModal() {
   const { state, dispatch, showToast, getGradient } = useApp();
   const { addToPlaylistSurah, playlists } = state;
+
+  const handleClose = useCallback(() => {
+    dispatch({ type: 'CLOSE_ADD_TO_PLAYLIST' });
+  }, [dispatch]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -15,13 +19,9 @@ export default function AddToPlaylistModal() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [addToPlaylistSurah]);
+  }, [addToPlaylistSurah, handleClose]);
 
   if (!addToPlaylistSurah) return null;
-
-  const handleClose = () => {
-    dispatch({ type: 'CLOSE_ADD_TO_PLAYLIST' });
-  };
 
   const handleToggleSurahInPlaylist = (playlist) => {
     const isAlreadyIn = playlist.surahs.some(s => s.nomor === addToPlaylistSurah.nomor);
